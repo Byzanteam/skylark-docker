@@ -79,11 +79,8 @@ services:
       - ./log:/var/www/skylark/log
       - ./tmp/pids:/var/www/pids
     command: bundle exec puma -C config/puma.rb
-    expose:
-      - '3000'
 
   sidekiq:
     <<: *app_base
     container_name: 'slp_sidekiq'
     command: bundle exec sidekiq -C config/sidekiq.yml -L /var/www/skylark/log/sidekiq.log
-    expose: []
