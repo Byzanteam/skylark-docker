@@ -3,7 +3,7 @@ Docker deployment of [Skylark](https://skylarkly.com).
 
 # Installation
 
-## Install Docker / Git
+## Install Docker & Git
 ```bash
 wget -qO- https://get.docker.com/ | sh
 ```
@@ -19,7 +19,7 @@ Alternately, download manually at https://github.com/docker/compose/releases.
 
 ## Install Skylark
 
-Create a /var/skylark folder, clone the Official Skylark Docker Image into it:
+1. Create a /var/skylark folder, clone the official Skylark Docker repository into it:
 
 ```bash
 mkdir /var/skylark
@@ -27,23 +27,40 @@ git clone https://github.com/GreenNerd/skylark-docker.git /var/skylark
 cd /var/skylark
 ```
 
-Build it manually
+2. Build it manually
 ```bash
 cd /var/skylark/images/base && ./build
 cd /var/skylark/images/production && ./build
 ```
 
-Run!
-
+3. Copy the env file and fill out it
 ```bash
 cd /var/skylark
+sudo -s
+cp app.default.env app.local.env
+# just fill out app.local.env with proper env parameters
+```
+
+4. Set up database and precompile assets
+```bash
+cd /var/skylark
+./scripts/install
+sudo -s
 docker-compose up -d
 ```
 
-Before run you might run below:
+5. Run Skylark!
 ```bash
 cd /var/skylark
-./script/install # First install, precompile assets
-./script/start # Run server
-./script/update # Update container
+sudo -s
+docker-compose up -d
+```
+or
+```bash
+./scripts/start
+```
+
+6. Update Skylark
+```bash
+./script/update
 ```
