@@ -28,7 +28,7 @@ COPY resources/type-windows.mgk /tmp/
 RUN find /usr/lib -name type-windows.mgk -type f -exec cp /tmp/type-windows.mgk {} +
 RUN find /usr/lib -name type.mgk -type f -exec cp /tmp/type.mgk {} +
 
-ENV RUBY_BUILD_MIRROR_URL=https://cache.ruby-china.org
+ENV RUBY_BUILD_MIRROR_URL https://cache.ruby-china.org
 RUN echo 'gem: --no-document' >> /usr/local/etc/gemrc && \
     mkdir /src && cd /src && \
     git clone https://github.com/rbenv/ruby-build.git && \
