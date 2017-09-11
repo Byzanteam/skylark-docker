@@ -11,9 +11,8 @@ This command installs the latest versions of Docker and Git on your server. Alte
 
 ## Install Docker Compose
 ```bash
-sudo -i
 curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
 ```
 
 Alternately, download manually at https://github.com/docker/compose/releases.
@@ -23,7 +22,6 @@ Alternately, download manually at https://github.com/docker/compose/releases.
 1. Create a /var/skylark folder, clone the official Skylark Docker repository into it:
 
 ```bash
-sudo -s
 mkdir /var/skylark
 git clone https://github.com/GreenNerd/skylark-docker.git /var/skylark
 cd /var/skylark
@@ -31,7 +29,6 @@ cd /var/skylark
 
 2. Build it manually
 ```bash
-sudo -s
 cd /var/skylark/images/base && ./build
 cd /var/skylark/images/production && ./build
 ```

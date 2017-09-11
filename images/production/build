@@ -8,4 +8,4 @@ SLP_VERSION=vfix-file-entries
 # echo "Download completed"
 
 echo "Building the production image"
-docker build -t skylark/production:latest .
+docker build -t skylark/production:v2.6.4.1 .
