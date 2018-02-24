@@ -1,0 +1,25 @@
+default: &default
+  rails:
+    pool: <%= SNEAKERS_RAILS_POOL_SIZE %>
+    timeout: <%= SNEAKERS_RAILS_TIMEOUT %>
+  standalone:
+    threads: <%= SNEAKERS_SA_THREADS %>
+    durable: true
+    daemonize: false
+  rabbitmq:
+    host: <%= SNEAKERS_RMP_HOST %>
+    port: <%= SNEAKERS_RMP_PORT %>
+    vhost: <%= SNEAKERS_RMP_VHOST %>
+    username: <%= SNEAKERS_RMP_USERNAME %>
+    password: <%= SNEAKERS_RMP_PASSWORD %>
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default
+  standalone:
+    daemonize: true
