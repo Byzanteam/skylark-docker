@@ -6,6 +6,3 @@ docker-compose build
 docker-compose run app bundle exec rails db:create
 docker-compose run app bundle exec rails db:schema:load
 docker-compose run app bundle exec rails assets:precompile
-
-docker-compose run rabbitmq rabbitmqctl add_user skylark slp_rabbitmq
-docker-compose run rabbitmq rabbitmqctl set_permissions -p / skylark '.*' '.*' '.*'
