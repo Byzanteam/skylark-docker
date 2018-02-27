@@ -37,8 +37,12 @@ services:
   rabbitmq:
     container_name: 'slp_rabbitmq'
     image: rabbitmq:3.7.3-alpine
+    env_file:
+      - app.default.env
+      - app.local.env
     volumes:
       - ./etc/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
+      - ./rabbitmq_data:/var/lib/rabbitmq/mnesia/rabbit@slp_rabbitmq
     hostname: 'slp_rabbitmq'
     expose:
       - '5672'
@@ -90,6 +94,7 @@ services:
       - ./config/secrets.yml:/var/www/skylark/config/secrets.yml
       - ./config/settings.yml:/var/www/skylark/config/settings.yml
       - ./config/sidekiq.yml:/var/www/skylark/config/sidekiq.yml
+      - ./config/sneakers.yml:/var/www/skylark/config/sneakers.yml
       - ./tmp:/var/www/skylark/tmp
       - ./log:/var/www/skylark/log
       - ./tmp/pids:/var/www/pids
