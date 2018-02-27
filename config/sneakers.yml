@@ -4,6 +4,7 @@ default: &default
     timeout: <%= ENV['SNEAKERS_RAILS_TIMEOUT'] %>
   standalone:
     threads: <%= ENV['SNEAKERS_SA_THREADS'] %>
+    log: <%= ENV['SNEAKERS_SA_LOGFILE'] %>
   rabbitmq:
     host: <%= ENV['SNEAKERS_RMP_HOST'] %>
     port: <%= ENV['SNEAKERS_RMP_PORT'] %>
