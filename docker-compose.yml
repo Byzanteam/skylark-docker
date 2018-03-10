@@ -34,6 +34,20 @@ services:
       - '9200'
       - '9300'
 
+  rabbitmq:
+    container_name: 'slp_rabbitmq'
+    image: rabbitmq:3.7.3-alpine
+    env_file:
+      - app.default.env
+      - app.local.env
+    volumes:
+      - ./etc/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
+      - ./rabbitmq_data:/var/lib/rabbitmq/mnesia/rabbit@slp_rabbitmq
+    hostname: 'slp_rabbitmq'
+    expose:
+      - '5672'
+      - '15672'
+
   web:
     container_name: 'slp_web'
     image: dockerhub.qingcloud.com/skylark/production:$SLP_VERSION
@@ -43,6 +57,7 @@ services:
     depends_on:
       - app
       - sidekiq
+      - sneakers
     command: /bin/bash /etc/nginx/start
     volumes:
       - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf
@@ -79,6 +94,7 @@ services:
       - ./config/secrets.yml:/var/www/skylark/config/secrets.yml
       - ./config/settings.yml:/var/www/skylark/config/settings.yml
       - ./config/sidekiq.yml:/var/www/skylark/config/sidekiq.yml
+      - ./config/sneakers.yml:/var/www/skylark/config/sneakers.yml
       - ./tmp:/var/www/skylark/tmp
       - ./log:/var/www/skylark/log
       - ./tmp/pids:/var/www/pids
@@ -94,4 +110,13 @@ services:
     <<: *app_base
     container_name: 'slp_sidekiq'
     command: bundle exec sidekiq -C config/sidekiq.yml -L /var/www/skylark/log/sidekiq.log
+    expose: []
+
+  sneakers:
+    <<: *app_base
+    container_name: 'slp_sneakers'
+    depends_on:
+      - rabbitmq
+      - sidekiq
+    command: bundle exec bin/consumer_server
     expose: []

@@ -1,0 +1,22 @@
+default: &default
+  rails:
+    pool: <%= ENV['SNEAKERS_RAILS_POOL_SIZE'] %>
+    timeout: <%= ENV['SNEAKERS_RAILS_TIMEOUT'] %>
+  standalone:
+    threads: <%= ENV['SNEAKERS_SA_THREADS'] %>
+    log: <%= ENV['SNEAKERS_SA_LOGFILE'] %>
+  rabbitmq:
+    host: <%= ENV['SNEAKERS_RMP_HOST'] %>
+    port: <%= ENV['SNEAKERS_RMP_PORT'] %>
+    vhost: <%= ENV['SNEAKERS_RMP_VHOST'] %>
+    username: <%= ENV['SNEAKERS_RMP_USERNAME'] %>
+    password: <%= ENV['SNEAKERS_RMP_PASSWORD'] %>
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default

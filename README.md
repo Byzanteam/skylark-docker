@@ -54,3 +54,12 @@ cd /var/skylark
 ./script/start # Run server
 ./script/update # Update container
 ```
+
+## RabbitMQ
+Some extra works need to be done for RabbitMQ.Follow steps below:
+
+1. First run installation scipt `./scripts/install`
+2. Start up RabbitMQ service by `docker-compose run rabbitmq` and keep it alive
+3. Get ID of the container by `docker ps | grep rabbitmq`
+4. Set up a new user by `docker exec -it ID_of_container_got_above rabbitmqctl add_user username password`
+5. Set permissions for the user by `docker exec -it ID_of_container_got_above rabbitmqctl set_permissions -p / username '.*' '.*' '.*'`
