@@ -4,3 +4,4 @@ touch app.local.env
 docker-compose build
 docker-compose run app bundle exec rails db:create
 docker-compose run app bundle exec rails db:schema:load
+docker-compose run app bundle exec rails assets:precompile

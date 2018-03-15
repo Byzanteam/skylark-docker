@@ -91,6 +91,7 @@ defaults: &defaults
   xundao:
     client_id: <%= ENV['SETTING_XUNDAO_CLIENT_ID'] %>
     client_secret: <%= ENV['SETTING_XUNDAO_CLIENT_SECRET'] %>
+    domain: <%= ENV['SETTING_XUNDAO_DOMAIN'] %>
 
 development:
   <<: *defaults
