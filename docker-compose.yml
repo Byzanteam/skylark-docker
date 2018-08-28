@@ -113,7 +113,8 @@ services:
     expose:
       - "3306"
     volumes:
-      - "./ect/mysql/init:/tmp/mysql-init"
+      - "./kaoqin/kaoqin_webuildu.sql:/tmp/kaoqin_webuildu.sql"
+      - "./ect/mysql/init:/tmp/init-mysql"
       - "./data/mysql:/var/lib/mysql"
   php_app:
     image: nanoninja/php-fpm:7.2
