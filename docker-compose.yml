@@ -115,7 +115,7 @@ services:
     volumes:
       - "./data/mysql:/var/lib/mysql"
   php_app:
-    image: nanoninja/php-fpm:${PHP_VERSION}
+    image: nanoninja/php-fpm:7.2
     restart: always
     env_file:
       - app.default.env
