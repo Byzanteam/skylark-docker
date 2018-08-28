@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -eux
 
-mysql -u"$(MYSQL_ROOT_USER)" -p"$(MYSQL_ROOT_PASSWORD)" "$(MYSQL_DATABASE)" < /tmp/kaoqin_webuildu.sql 2>/dev/null
+mysql -u$MYSQL_ROOT_USER -p$MYSQL_ROOT_PASSWORD $MYSQL_DATABASE < /tmp/kaoqin_webuildu.sql 2>/dev/null
