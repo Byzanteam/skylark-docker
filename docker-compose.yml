@@ -113,6 +113,7 @@ services:
     expose:
       - "3306"
     volumes:
+      - "./ect/mysql/init:/tmp/mysql-init"
       - "./data/mysql:/var/lib/mysql"
   php_app:
     image: nanoninja/php-fpm:7.2
