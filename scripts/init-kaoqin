@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -eux
 
-docker-compose exec -i $(docker-compose ps -q db_mysql) /tmp/mysql-init
+docker-compose exec -i $(docker-compose ps -q db_mysql) /tmp/init-mysql
