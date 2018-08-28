@@ -111,11 +111,11 @@ services:
       - app.default.env
       - app.local.env
     expose:
-      - "3306"
+      - '3306'
     volumes:
-      - "./kaoqin/kaoqin_webuildu.sql:/tmp/kaoqin_webuildu.sql"
-      - "./ect/mysql/init:/tmp/init-mysql"
-      - "./data/mysql:/var/lib/mysql"
+      - ./kaoqin/kaoqin_webuildu.sql:/tmp/kaoqin_webuildu.sql
+      - ./ect/mysql/init:/tmp/init-mysql
+      - ./data/mysql:/var/lib/mysql
   php_app:
     image: nanoninja/php-fpm:7.2
     restart: always
@@ -123,9 +123,9 @@ services:
       - app.default.env
       - app.local.env
     volumes:
-      - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
-      - "./kaoqin:/var/www/kaoqin"
+      - ./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ./kaoqin:/var/www/kaoqin
     depends_on:
       - db_mysql
     expose:
-      - "9000"
+      - '9000'
