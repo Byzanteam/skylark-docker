@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -eux
+
+ocker exec -i $(shell docker-compose ps -q db_mysql) mysql -u"$(MYSQL_ROOT_USER)" -p"$(MYSQL_ROOT_PASSWORD)" "$(MYSQL_DATABASE)" < kaoqin/kaoqin_webuildu.sql 2>/dev/null

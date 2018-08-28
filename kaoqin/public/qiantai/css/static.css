@@ -1,0 +1,152 @@
+.person_infor{
+    display: flex;
+    justify-content: space-between;
+    background: #fff;
+    padding:0.3rem;
+}
+.person_left{
+    display: flex;
+    align-items: center;
+}
+.person_left>div:nth-child(1){
+    width:21%;
+    margin-right: 0.26rem;
+}
+.person_left img{
+    width:100%;
+    border-radius: 50%;
+}
+.person_left>div:nth-child(2)>div:nth-child(1){
+    font-size: 0.3rem;
+    font-weight: bold;
+    margin-bottom: 0.08rem;
+}
+.person_left>div:nth-child(2)>div:nth-child(2){
+    color: #989898;
+}
+.person_right{
+    display: flex;
+    align-items: center;
+    color: #148DFA;
+}
+.person_right img{
+    width:16%;
+    margin-right: 0.16rem;
+}
+.static_content{
+    background: #fff;
+}
+.static_content>div:nth-child(1){
+    display: flex;
+    align-items: center;
+    padding:0.2rem;
+    border-bottom:solid 1px #eee;
+    color: #363636;
+}
+.static_content>div:nth-child(1)>img{
+    width:4%;
+    margin-right: 0.1rem;
+}
+.clock_static{
+    padding:0.2rem;
+    position: relative;
+}
+.onduty, .offduty {
+    display: flex;
+}
+.onduty{
+    margin-bottom: 0.6rem;
+}
+.offduty{
+    margin-bottom: 0.3rem;
+}
+.left_text {
+    width: 9%;
+}
+.left_text span {
+    background: #999;
+    border-radius: 50%;
+    color: #fff;
+    width: 0.4rem;
+    height: 0.4rem;
+    display: inline-block;
+    text-align: center;
+    line-height: 0.4rem;
+    margin-right: 0.16rem;
+    position: relative;
+    z-index: 99;
+}
+.right_text {
+    width: 82%;
+}
+.hasclock>div:nth-child(1) {
+    font-size: 0.32rem;
+    font-weight: bold;
+    margin-top: 0.16rem;
+    color: #363636;
+}
+.hasposition {
+    justify-content: flex-start !important;
+    margin: 0.16rem 0;
+}
+.position {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.position img {
+    width: 4%;
+    margin-right: 0.16rem;
+}
+.normal{
+    background: #1d94ff;
+    color: #fff;
+    display: inline-block;
+    border-radius: 0.04rem;
+    padding: 0.02rem 0.08rem;
+}
+.topline{
+    border-right: solid 1px #cbcbcb;
+    height: 2.6rem;
+    position: absolute;
+    top: 0.56rem;
+    left: 0.38rem;
+}
+.ontitle{
+    font-size: 0.28rem;
+}
+.box{
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    display: none;
+}
+.calenbox{
+    background: #fff;
+    position: fixed;
+    z-index: 1000;
+    top: 15%;
+    left: 14%;
+    width: 72%;
+    border-radius: 0.1rem;
+    font-size: 0.28rem;
+    color: #363636;
+    display: none;
+}
+.calenbox>div{
+    padding:0.3rem;
+    display: flex;
+    align-items: center;
+    border-bottom: solid 1px #ededed;
+}
+.calenbox>div:last-child{
+    border-bottom: none;
+}
+.calenbox img{
+    width:7%;
+    margin-right: 0.26rem;
+}

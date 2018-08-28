@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <title>考勤打卡</title>
+    <link rel="stylesheet" href="/houtai/css/index.css">
+    <link rel="stylesheet" href="/houtai/css/jedate.css">
+</head>
+<body>
+<div class="header">
+    <div>
+        <!--<img src="/houtai/images/oa_logo.png" alt="">-->
+        <span>欢迎使用考勤系统！</span>
+    </div>
+    <div class="header_right">
+        <!--<img src="/houtai/images/setting.png">-->
+        <!--<span>更新数据</span>-->
+        <img src="/houtai/images/head.png">
+        <span>{$users['principal']}</span>
+    </div>
+</div>
+<div class="content">
+    <div class="static">
+        <div class="select_static">
+            <div class="select_one">
+                <div>时间范围</div>
+                <div class="time">
+                    <span class="timeselect" att="today">今天</span>
+                    <span class="timeselect" att="yesterday">昨天</span>
+                    <!--<span class="timeselect">本周</span>-->
+                    <!--<span class="timeselect">上周</span>-->
+                    <span class="timeselect" att="this_month">本月</span>
+                    <span class="timeselect" att="last_month">上月</span>
+                </div>
+                <div>
+                    <input type="date" id="search_start_time" placeholder="开始时间">
+                    &nbsp;至&nbsp;
+                    <input type="date" id="search_end_time" placeholder="截止时间">
+                    <button type="button" class="search" id="search_time">搜索</button>
+                    <button type="button" class="search" id="update_data">更新数据</button>
+                </div>
+            </div>
+            <div class="select_one">
+                <div>状态</div>
+                <div class="status">
+                    <span class="statusselect selectstyle" att="all">全部</span>
+                    <span class="statusselect" att="normal">正常</span>
+                    <span class="statusselect" att="abnormal">异常</span>
+                </div>
+            </div>
+            <div class="select_one">
+                <div>用户</div>
+                <div>
+                    <input id="user_name" type="text" placeholder="输入用户名">
+                    <button type="button" class="search">搜索</button>
+                </div>
+            </div>
+        </div>
+        <div class="static_list">
+            <div>明细列表</div>
+            <div class="list_table">
+                <table>
+                    <thead>
+                    <tr>
+                        <td>时间</td>
+                        <td>用户</td>
+                        <td>上班时间</td>
+                        <td>下班时间</td>
+                        <td>状态</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach($results as $result):?>
+                    <tr>
+                        <td>{$result.time_day}</td>
+                        <td>{$result.name}</td>
+                        <td><span class="{$result.is_morning_status==1?'':'special'}">{$result.is_morning_status==0?'未打卡':$result.morning_time}</span></td>
+                        <td><span class="{$result.is_afternoon_status==1?'':'special'}">{$result.is_afternoon_status==0?'未打卡':$result.afternoon_time}</span></td>
+                        <td><span class="{$result.is_morning_status==1&&$result.is_afternoon_status==1?'':'abnormal'}">{$result.is_morning_status==1&&$result.is_afternoon_status==1?'正常':'异常'}</span></td>
+                    </tr>
+                    <?php endforeach?>
+                    </tbody>
+                </table>
+            </div>
+            <!--<div class="page">显示 <span class="bluecolor">10</span> / 1000条记录</div>-->
+            <!--<div class="more">+显示更多</div>-->
+            <div class="paging">
+                <!--<div>数据总条：<span class="datatotal">0</span> 条&emsp;<span class="bluefont datapage">0</span> / <span class="datapagetotal">1</span></div>-->
+                <!--<div id="page" class="page_div"></div>-->
+
+            </div>
+
+        </div>
+        {$results->render()}
+    </div>
+    <div class="setting">
+        <div>考勤时间设置</div>
+        <div class="setting_content">
+            <div>
+                <div>类型</div>
+                <div class="clocktype">
+                    <div class="selecttype" id="is_working_day"><img src="/houtai/images/check.png">法定工作日</div>
+                    <div class="selecttype" id="no_working_day"><img src="/houtai/images/checkno.png">非工作日</div>
+                </div>
+            </div>
+            <div>
+                <div>上班时间</div>
+                <div class="jeinpbox"><input type="text" class="jeinput time_to_work" id="start" placeholder="hh:mm:ss"></div>
+            </div>
+            <div>
+                <div>下班时间</div>
+                <div class="jeinpbox"><input type="text" class="jeinput time_old_work" id="end" placeholder="hh:mm:ss"></div>
+            </div>
+        </div>
+        <div class="footbtn">
+            <div val="1" id="queren">确定</div>
+            <div>取消</div>
+        </div>
+    </div>
+</div>
+<script src="/houtai/js/jquery.min.js"></script>
+<script src="/houtai/js/jedate.js"></script>
+<script src="/houtai/js/paging.js"></script>
+<script>
+    $(function () {
+        $('#is_working_day').click()
+    })
+    var timevalue,statusvalue,typevalue;
+//    开始时间
+    var starttime = jeDate("#start",{
+//        minDate:"01:02:08",              //最小日期
+//        maxDate:"15:25:35",              //最大日期
+        format: "hh:mm:ss"
+    });
+//    结束时间
+    var endtime = jeDate("#end",{
+        format: "hh:mm:ss"
+    });
+    //时间范围
+    $('.time').on('click','.timeselect',function () {
+       var index=$(this).index();
+       $('.timeselect').removeClass("selectstyle").eq(index).addClass("selectstyle");
+       timevalue=index;
+    });
+    //状态
+    $('.status').on('click','.statusselect',function () {
+        var index=$(this).index();
+        $('.statusselect').removeClass("selectstyle").eq(index).addClass("selectstyle");
+        statusvalue=index;
+    });
+    //工作时间设置
+    $(document).on('click','#is_working_day',function () {
+        $.get("{:url('admin/index/getTime')}",{'status':1},function (res) {
+            $('.time_to_work').val(res.to_work);
+            $('.time_old_work').val(res.out_work);
+            $('#queren').attr('val',1)
+        },'json')
+    })
+    $(document).on('click','#no_working_day',function () {
+        $.get("{:url('admin/index/getTime')}",{'status':2},function (res) {
+            $('.time_to_work').val(res.to_work);
+            $('.time_old_work').val(res.out_work);
+            $('#queren').attr('val',2)
+        },'json')
+    })
+    $(document).on('click','#queren',function () {
+        var status = $(this).attr('val');
+        var to_work = $('.time_to_work').val();
+        var out_work = $('.time_old_work').val();
+
+        $data = {
+            'status':status,
+            'to_time':to_work,
+            'out_time':out_work
+        };
+        console.log($data);
+        $.get("{:url('admin/index/setTime')}",$data,function (res) {
+
+            $('.time_to_work').val(res.to_work);
+            $('.time_old_work').val(res.out_work);
+            // $('#queren'),attr('val',2)
+        },'json')
+    })
+    //条件筛选
+    $(document).on('click','.selectstyle',function () {
+        var att = $(this).attr('att');
+        var date=new Date();
+        var year=date.getFullYear();
+        var month=(date.getMonth()+1)<10?'0'+(date.getMonth()+1):(date.getMonth()+1);
+        var day=date.getDate()<10?'0'+date.getDate():date.getDate();
+        var today = year+'-'+month+'-'+day;
+        var time='';
+        if (att =='today'){
+            var time =today;
+        }
+        if (att =='yesterday'){
+            var day =date.getDate()<10?'0'+(date.getDate()-1):(date.getDate()-1)
+            var time = year+'-'+month+'-'+day;
+        }
+        if (att =='this_month') {
+            var time = year+'-'+month;
+        }
+        if (att =='last_month') {
+            var month=(date.getMonth())<10?'0'+(date.getMonth()):(date.getMonth());
+            var time = year+'-'+month;
+        }
+        var status = $('.status>.selectstyle').attr('att')
+        is_status='';
+        if(status =='normal'){
+            var is_status =1;
+        }
+        if(status =='abnormal'){
+            var is_status =2;
+        }
+        var user_name = $('#user_name').val();
+        var data ={
+            'time':time,
+            'is_status':is_status,
+            'user_name':user_name
+        }
+        $.get("{:url('admin/index/search')}",data,function (res) {
+            var html =''
+           $.each(res,function (i,v) {
+               html+='<tr><td>'+v.time_day+'</td<tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
+           })
+            console.log()
+            $('tbody').html(html)
+        },'json')
+
+    })
+    $(document).on('click','.statusselect',function () {
+        // console.log(11);
+        var status = $(this).attr('att');
+        var is_status='';
+        if(status =='normal'){
+            var is_status =1;
+        }
+        if(status =='abnormal'){
+            var is_status =2;
+        }
+
+        var att = $('.time>.selectstyle').attr('att');
+        var date=new Date();
+        var year=date.getFullYear();
+        var month=(date.getMonth()+1)<10?'0'+(date.getMonth()+1):(date.getMonth()+1);
+        var day=date.getDate()<10?'0'+date.getDate():date.getDate();
+        var today = year+'-'+month+'-'+day;
+        var time='';
+        if (att =='today'){
+            var time =today;
+        }
+        if (att =='yesterday'){
+            var day =date.getDate()<10?'0'+(date.getDate()-1):(date.getDate()-1)
+            var time = year+'-'+month+'-'+day;
+        }
+        if (att =='this_month') {
+            var time = year+'-'+month;
+        }
+        if (att =='last_month') {
+            var month=(date.getMonth())<10?'0'+(date.getMonth()):(date.getMonth());
+            var time = year+'-'+month;
+        }
+        var user_name = $('#user_name').val();
+        var data ={
+            'time':time,
+            'is_status':is_status,
+            'user_name':user_name
+        }
+        $.get("{:url('admin/index/search')}",data,function (res) {
+            var html =''
+            $.each(res,function (i,v) {
+                html+='<tr><td>'+v.time_day+'</td<tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
+            })
+            $('tbody').html(html)
+        },'json')
+
+    })
+    //时间区间搜索
+    $(document).on('click','#search_time',function () {
+        var star_time = $('#search_start_time').val()
+        var end_time = $('#search_end_time').val();
+
+        var status = $('.status>.selectstyle').attr('att')
+        is_status='';
+        if(status =='normal'){
+            var is_status =1;
+        }
+        if(status =='abnormal'){
+            var is_status =2;
+        }
+        var user_name = $('#user_name').val();
+        var data ={
+            'start_time':star_time,
+            'end_time':end_time,
+            'is_status':is_status,
+            'user_name':user_name
+        }
+        $.get("{:url('admin/index/search_time')}",data,function (res) {
+            var html =''
+            $.each(res,function (i,v) {
+                html+='<tr><td>'+v.time_day+'</td<tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
+            })
+            console.log()
+            $('tbody').html(html)
+        },'json')
+
+    })
+    //用户名搜索
+    $(document).on('click','.search',function () {
+        var att = $('.time>.selectstyle').attr('att');
+        var date=new Date();
+        var year=date.getFullYear();
+        var month=(date.getMonth()+1)<10?'0'+(date.getMonth()+1):(date.getMonth()+1);
+        var day=date.getDate()<10?'0'+date.getDate():date.getDate();
+        var today = year+'-'+month+'-'+day;
+        var time='';
+        if (att =='today'){
+            var time =today;
+        }
+        if (att =='yesterday'){
+            var day =date.getDate()<10?'0'+(date.getDate()-1):(date.getDate()-1)
+            var time = year+'-'+month+'-'+day;
+        }
+        if (att =='this_month') {
+            var time = year+'-'+month;
+        }
+        if (att =='last_month') {
+            var month=(date.getMonth())<10?'0'+(date.getMonth()):(date.getMonth());
+            var time = year+'-'+month;
+        }
+        var status = $('.status>.selectstyle').attr('att')
+        is_status='';
+        if(status =='normal'){
+            var is_status =1;
+        }
+        if(status =='abnormal'){
+            var is_status =2;
+        }
+        var user_name = $('#user_name').val();
+        var data ={
+            'time':time,
+            'is_status':is_status,
+            'user_name':user_name
+        }
+        $.get("{:url('admin/index/search')}",data,function (res) {
+            var html =''
+            $.each(res,function (i,v) {
+                html+='<tr><td>'+v.time_day+'</td<tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
+            })
+            console.log()
+            $('tbody').html(html)
+        },'json')
+    })
+//    考勤类型选择
+    $('.selecttype').click(function () {
+       var index=$(this).index();
+       $('.selecttype img').attr("src","/houtai/images/checkno.png").eq(index).attr("src","/houtai/images/check.png");
+       typevalue=index;
+    });
+   // ajaxTest(1);
+   //  function ajaxTest(num) {//num为当前第几页
+   //     $.ajax({
+   //         url:'',
+   //         type:'',
+   //         dataType:'',
+   //         success:function(ret){
+   //             $('.datatotal').html(ret.total);//总数
+   //             $('.datapage').html(num);//当前页数
+   //             $('.datapagetotal').html(ret.page_total);//总页数
+   //             //分页
+   //             $("#page").paging({
+   //                 pageNo: num,//当前页数
+   //                 totalPage: parseInt(ret.page_total),//总页数
+   //                 totalSize: parseInt(ret.total),//总数
+   //                 callback: function(num) {
+   //                     ajaxTest(num);
+   //                 }
+   //             });
+   //         }
+   //     });
+   //  }
+
+    $(document).on('click','#update_data',function () {
+        $.get("{:url('index/index/import')}",'',function (res) {
+            if (res =='success'){
+                alert('更新用户数据成功')
+            }else {
+                alert('更新数据失败')
+            }
+        })
+    })
+</script>
+</body>
+</html>

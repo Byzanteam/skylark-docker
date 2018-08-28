@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <title>考勤打卡</title>
+    <link rel="stylesheet" href="/static/css/normal-HSY.css">
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+    <script type="text/javascript" src="//webapi.amap.com/maps?v=1.4.9&key=e869665046d08192a2d5f307fed4ae54"></script>
+    <script type="text/javascript" src="//cache.amap.com/lbs/static/addToolbar.js"></script>
+</head>
+<style>
+    #container {width:300px; height: 180px;}
+    .rotate {
+        width:50%;
+        -webkit-animation: rotating 2s linear infinite;
+        -moz-animation: rotating 2s linear infinite;
+        -o-animation: rotating 2s linear infinite;
+        animation: rotating 2s linear infinite
+    }
+
+    @-webkit-keyframes rotating {
+        from { -webkit-transform: rotate(0) }
+        to { -webkit-transform: rotate(360deg) }
+    }
+
+    @keyframes rotating {
+        from { transform: rotate(0) }
+        to { transform: rotate(360deg) }
+    }
+    @-moz-keyframes rotating {
+        from { -moz-transform: rotate(0) }
+        to { -moz-transform: rotate(360deg) }
+    }
+</style>
+<body>
+
+<div class="header">
+    <div class="header-content">
+        <div><img src="{$res['headimgurl']}"></div>
+        <div>{$res['name']}</div>
+        <div>{$miscellaneous['company_name']}</div>
+        <div class="calendar">
+            <img src="/static/images/calendar.png">
+            <span class="todaydate">{:date('Y-m-d',time())}</span>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="onduty">
+        <div class="left_text"><span>上</span></div>
+        <div class="right_text">
+            <div class="ontitle">
+                <span>上班打卡&emsp;{$miscellaneous['to_work']}</span>
+            </div>
+            <!--{:strtotime($miscellaneous['to_work'])}-->
+            <!--未打卡-->
+            <div style="{:empty($res['morning_time'])&&time()>strtotime('12:00:00')?'display:none':''}">
+                <div style="{:isset($res['morning_time'])&&!empty($res['morning_time'])?'display:none':''}">
+                    <div position="" id="position_to_work" class="onclock {:time()>strtotime($miscellaneous['to_work'])?'yellow':''}">
+                        <div>
+                            <div>上班时间</div>
+                            <div class="nowtime">08:46:31</div>
+                        </div>
+                    </div>
+                    <div class="position"><img src="/static/images/position.png"><span class="position_card">定位中...</span></div>
+                </div>
+                <!--已打卡-->
+                <div class="hasclock" style="{:isset($res['morning_time'])&&!empty($res['morning_time'])?'':'display:none'}">
+                    <div>打卡时间：{:isset($res['morning_time'])?$res['morning_time']:''}<span class="late" style="{:isset($res['is_morning_status'])&&($res['is_morning_status']==2)?'':'display:none'}" >迟到</span></div>
+                    <div class="position hasposition"><img src="/static/images/hasposition.png">{:empty($res['morning_address'])?:$res['morning_address']}</div>
+                    <div class="updateclock" style="{:date('H',time())>=9?'display:none':''}">更新打卡</div>
+                </div>
+            </div>
+
+            <!--缺卡-->
+            <div class="lack" style="{:empty($res['morning_time'])&&time()>strtotime('12:00:00')?'':'display:none'}">缺卡</div>
+        </div>
+    </div>
+
+    <div class="offduty">
+        <div class="left_text"><span>下</span></div>
+        <div class="right_text">
+            <div class="ontitle ">
+                <span>下班打卡&emsp;{$miscellaneous['out_work']}</span>
+            </div>
+            <!--未打卡-->
+            <div style="{:isset($res['morning_time'])&&!empty($res['morning_time'])||date('H',time())>=12?'':'display:none'}">
+                <div  style="{:isset($res['afternoon_time'])&&!empty($res['afternoon_time'])?'display:none':''}">
+                    <div position="" id="position_out_work" class="onclock">
+                        <div>
+                            <div>下班时间</div>
+                            <div class="nowtime">18:46:31</div>
+                        </div>
+                        <!--<img src="/static/images/loading.png" class="rotate">-->
+                    </div>
+                    <div class="position"><img src="/static/images/position.png"><span class="position_card">定位中...</span></div>
+                </div>
+                <!--已打卡-->
+                <div class="hasclock" style="{:isset($res['afternoon_time'])&&!empty($res['afternoon_time'])?'':'display:none'}">
+                    <div>打卡时间：{:isset($res['afternoon_time'])?$res['afternoon_time']:''}<span class="late" style="{:isset($res['is_afternoon_status'])&&($res['is_afternoon_status']==2)?'':'display:none'}">早退</span></div>
+                    <div class="position hasposition" style="text-align: left"><img src="/static/images/hasposition.png">{:empty($res['afternoon_address'])?'':$res['afternoon_address']}</div>
+                    <!--<div class="updateclock">更新打卡</div>-->
+                </div>
+                <!--缺卡-->
+                <div class="lack" style="display: none">缺卡</div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="staticbtn">统计</div>
+<div class="box"></div>
+<!--上班打卡成功-->
+<div class="success">
+    <div class="success_title">
+        <img src="/static/images/success.png">
+        打卡成功
+    </div>
+    <div class="success_time">{:date('H:i:s',time())}</div>
+    <div>一天的时间，从此刻开始</div>
+    <div class="failed_btn">我知道了</div>
+</div>
+<!--打卡失败-->
+<div class="failed">
+    <div><img src="/static/images/failed.png"></div>
+    <div>打卡失败</div>
+    <div>很抱歉，打卡失败，再打一次吧</div>
+    <div class="success_btn">我知道了</div>
+</div>
+<!--打卡备注-->
+<div class="remark">
+    <div class="success_title">打卡备注</div>
+    <div class="remark_infor">
+        <div>打卡时间：<span>{:date('H:i:s',time())}</span></div>
+        <div>打卡地点：<span id="remark_address">定位中...</span></div>
+    </div>
+    <div class="remark_text">
+        <textarea placeholder="添加备注信息" id="remark"></textarea>
+    </div>
+    <div class="remark_btn">
+        <div id="no_code">不打卡</div>
+        <div id="yes_code">确定</div>
+    </div>
+</div>
+<!--下班打卡成功-->
+<div class="offsuccess">
+    <div class="off_time">
+        <div>{:date('H:i:s',time())}</div>
+        <div>下班打卡成功</div>
+    </div>
+    <div>辛苦啦！回家好好休息吧</div>
+    <div class="offsuccess_btn">我知道了</div>
+</div>
+<!--<div id='container'></div>-->
+<!--<div id="tip"></div>-->
+<script src="/static/js/rem.js"></script>
+<script src="/static/js/jquery.min.js"></script>
+<!--定位-->
+<script type="text/javascript">
+    /***************************************
+     由于Chrome、IOS10等已不再支持非安全域的浏览器定位请求，为保证定位成功率和精度，请尽快升级您的站点到HTTPS。
+     ***************************************/
+    var map, geolocation;
+    //加载地图，调用浏览器定位服务
+    map = new AMap.Map('container', {
+        resizeEnable: true
+    });
+    map.plugin('AMap.Geolocation', function() {
+        geolocation = new AMap.Geolocation({
+            enableHighAccuracy: true,//是否使用高精度定位，默认:true
+            timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+            buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+            zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+            buttonPosition:'RB'
+        });
+        map.addControl(geolocation);
+        geolocation.getCurrentPosition();
+        AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
+        AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
+    });
+    //解析定位结果
+    function onComplete(data) {
+
+        $.get('https://restapi.amap.com/v3/geocode/regeo?key=e869665046d08192a2d5f307fed4ae54&location='+data.position.getLng()+','+data.position.getLat()+'&radius=1000&extensions=all&batch=false&roadlevel=0','',function (res) {
+            $('.position_card').html(res.regeocode.formatted_address)
+            $('#position_to_work').attr('position',res.regeocode.formatted_address)
+            $('#position_out_work').attr('position',res.regeocode.formatted_address)
+            $('#remark_address').html(res.regeocode.formatted_address)
+            $('#position_to_work').addClass('work')
+            $('#position_out_work').addClass('go_work')
+        })
+    }
+
+    //解析定位错误信息
+    function onError(data) {
+        $('#position_card').html('定位失败');
+    }
+</script>
+<script>
+//    window.onload  = function () {
+//        getUserPositionInfo()
+//    }
+    $('.staticbtn').click(function () {
+        window.location.href="http://{:$_SERVER['HTTP_HOST']}/index/attendance/statistics_user?user_id={$res['u_id']}";
+    });
+    gettime();
+    function gettime() {
+        var date=new Date();
+        var year=date.getFullYear();
+        var month=(date.getMonth()+1)<10?'0'+(date.getMonth()+1):(date.getMonth()+1);
+        var day=date.getDate()<10?'0'+date.getDate():date.getDate();
+        $('.todaydate').html(year+'-'+month+'-'+day);
+        h = (date.getHours() <10 ? '0'+date.getHours() : date.getHours()) + ':';
+        m = (date.getMinutes() <10 ? '0'+date.getMinutes() : date.getMinutes()) + ':';
+        s = date.getSeconds() <10 ? '0'+date.getSeconds() : date.getSeconds();
+        $('.nowtime').html(h+m+s);
+    }
+    setInterval("gettime()",1000);
+
+    //上班打卡
+    $('.onduty').on('click','.work',function () {
+
+        var date=new Date();
+        var year=date.getFullYear();
+        var month=(date.getMonth()+1)<10?'0'+(date.getMonth()+1):(date.getMonth()+1);
+        var day=date.getDate()<10?'0'+date.getDate():date.getDate();
+        var today = year+'/'+month+'/'+day;
+        var workTime = (new Date(today+ " 09:00:00")).getTime()/1000;
+        var user_id  = "{$res['u_id']}";
+        var position = $(this).attr('position');
+        var time_day = '{:date("Y-m-d",time())}';
+        var morning_time = '{:time()}';
+        var play_card_time = '{:date("H:i:s",time())}';
+
+//        console.log(morning_remarks);
+        if (morning_time>workTime){
+//            var is_morning_status = 2;
+            $('.box').show();
+            $('.remark').show();
+            $('.remark').on('click','#no_code',function () {
+                $('.remark').hide();
+                $('.box').hide();
+            })
+
+            $('.remark').on('click','#yes_code',function () {
+                var morning_remarks = $('#remark').val();
+                console.log(morning_remarks);
+                $data = {
+                    'user_id':user_id,
+                    'position':position,
+                    'time_day':time_day,
+                    'morning_time':play_card_time,
+                    'is_morning_status':2,
+                    'morning_remarks':morning_remarks
+                };
+                $('.remark').hide();
+                $('.box').hide();
+                $.post("{:url('index/attendance/punchClock')}",$data,function (res) {
+                    if (res){
+                        $('.success').show();
+                        $('.box').show();
+                        $('.success').on('click','.failed_btn',function () {
+                            window.location.href="http://{:$_SERVER['HTTP_HOST']}/index/attendance/index?user_id={$res['u_id']}";
+                        })
+                    }
+
+
+                })
+            })
+        }else {
+            $data = {
+                'user_id':user_id,
+                'position':position,
+                'time_day':time_day,
+                'morning_time':play_card_time,
+                'is_morning_status':1
+            };
+            $.post("{:url('index/attendance/punchClock')}",$data,function (res) {
+                if (res){
+                    $('.success').show();
+                    $('.box').show();
+                    $('.success').on('click','.failed_btn',function () {
+                        window.location.href="http://{:$_SERVER['HTTP_HOST']}/index/attendance/index?user_id={$res['u_id']}";
+                    })
+                }
+
+            })
+        }
+
+    });
+
+    //下班打卡
+    $('.offduty').on('click','.go_work',function () {
+//        alert(111);
+        var date=new Date();
+        var year=date.getFullYear();
+        var month=(date.getMonth()+1)<10?'0'+(date.getMonth()+1):(date.getMonth()+1);
+        var day=date.getDate()<10?'0'+date.getDate():date.getDate();
+        var today = year+'/'+month+'/'+day;
+        var workTime = (new Date(today+ " 18:00:00")).getTime()/1000;
+        var user_id  = "{$res['u_id']}";
+        var position = $(this).attr('position');
+        var time_day = '{:date("Y-m-d",time())}';
+        var morning_time = '{:time()}';
+        var play_card_time = '{:date("H:i:s",time())}';
+
+//        console.log(morning_remarks);
+        if (morning_time<workTime){
+//            alert(position);
+//            var is_morning_status = 2;
+            $('.remark').show();
+            $('.box').show();
+
+            $('.remark').on('click','#no_code',function () {
+                $('.remark').hide();
+                $('.box').hide();
+            })
+
+            $('.remark').on('click','#yes_code',function () {
+                var afternoon_remarks = $('#remark').val();
+//                console.log(afternoon_remarks);
+                $data = {
+                    'user_id':user_id,
+                    'position':position,
+                    'time_day':time_day,
+                    'afternoon_time':play_card_time,
+                    'is_afternoon_status':2,
+                    'afternoon_remarks':afternoon_remarks
+                };
+                $('.remark').hide();
+                $('.box').hide();
+                $.post("{:url('index/attendance/goClock')}",$data,function (res) {
+                    if (res){
+                        $('.offsuccess').show();
+                        $('.box').show();
+                        $('.offsuccess').on('click','.offsuccess_btn',function () {
+                            window.location.href="http://{:$_SERVER['HTTP_HOST']}/index/attendance/index?user_id={$res['u_id']}";
+                        })
+                    }
+
+
+                })
+            })
+        }else {
+            $data = {
+                'user_id':user_id,
+                'position':position,
+                'time_day':time_day,
+                'afternoon_time':play_card_time,
+                'is_afternoon_status':1
+            };
+            $.post("{:url('index/attendance/goClock')}",$data,function (res) {
+                if (res){
+                    $('.offsuccess').show();
+                    $('.box').show();
+                    $('.offsuccess').on('click','.offsuccess_btn',function () {
+                        window.location.href="http://{:$_SERVER['HTTP_HOST']}/index/attendance/index?user_id={$res['u_id']}";
+                    })
+                }
+
+            })
+        }
+
+    });
+
+</script>
+</body>
+</html>

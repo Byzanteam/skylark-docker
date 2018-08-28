@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <title>考勤打卡</title>
+    <link rel="stylesheet" href="/static/css/normal-HSY.css">
+    <link rel="stylesheet" href="/static/css/calendar.css">
+    <link rel="stylesheet" href="/static/css/static.css">
+</head>
+<body>
+<div class="person_infor">
+    <div class="person_left">
+        <div><img src="{$users['headimgurl']}"></div>
+        <div>
+            <div id="user_id" user_id="{$users['id']}">{$users['name']}</div>
+            <div><span class="checkdate">2018-08-13</span>（星期<span class="week">四</span>）</div>
+        </div>
+    </div>
+    <div class="person_right">
+        <img src="/static/images/clockcalen.png">打卡月历
+    </div>
+</div>
+<div class="calendar" id="calendar"></div>
+<div class="static_content">
+    <div><img src="/static/images/static_time1.png">今日打卡<span id="card_count">0</span>次</div>
+    <div class="clock_static" id="clock_static">
+        <div class="onduty">
+            <div class="left_text"><span>上</span></div>
+            <div class="right_text">
+                <div class="ontitle">
+                    <span>上班打卡&emsp;09:00</span>
+                </div>
+                <!--已打卡-->
+                <div class="hasclock to_work_card" style="display: none">
+                    <div>打卡时间：<span id="to_work_time">08:46:36</span></div>
+                    <div class="position hasposition"><img src="/static/images/hasposition.png"><span id="to_work_address">某某某某附属小学</span></div>
+                    <div class="normal" id="to_work_status">正常</div>
+                </div>
+                <!--<div class="lack" id="to_work_que" style="display: none">缺卡</div>-->
+            </div>
+        </div>
+        <div class="topline"></div>
+        <div class="offduty">
+            <div class="left_text">
+                <span>下</span>
+            </div>
+            <div class="right_text">
+                <div class="ontitle">
+                    <span>下班打卡&emsp;18:00</span>
+                </div>
+                <!--已打卡-->
+                <div class="hasclock out_work_card" style="display: none">
+                    <div>打卡时间：<span id="out_work_time">18:46:36</span></div>
+                    <div class="position hasposition" style="text-align: left"><img src="/static/images/hasposition.png"><span id="out_work_address">某某某某附属小学</span></div>
+                    <div class="normal" id="out_work_status">正常</div>
+                </div>
+                <!--<div class="lack" id="out_work_que" style="display: none">缺卡</div>-->
+            </div>
+        </div>
+    </div>
+    <div class="noclock" id="noclock">
+        <div><img src="/static/images/none.png"></div>
+        <div>当天没有打卡记录</div>
+    </div>
+
+
+</div>
+<!--选择月历弹框-->
+<div class="box"></div>
+<div class="calenbox">
+
+</div>
+<script src="/static/js/rem.js"></script>
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/calendar.js"></script>
+<script>
+    $('.box').click(function () {
+        $('.box,.calenbox').fadeOut();
+    });
+    $('.person_right').click(function () {
+       $('.box,.calenbox').fadeIn();
+    });
+</script>
+</body>
+</html>

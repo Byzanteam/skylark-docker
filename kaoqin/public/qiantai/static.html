@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <title>考勤打卡</title>
+    <link rel="stylesheet" href="css/normal-HSY.css">
+    <link rel="stylesheet" href="css/calendar.css">
+    <link rel="stylesheet" href="css/static.css">
+</head>
+<body>
+<div class="person_infor">
+    <div class="person_left">
+        <div><img src="images/head.png"></div>
+        <div>
+            <div>王小艺</div>
+            <div><span class="checkdate">2018-08-13</span>（星期<span class="week">四</span>）</div>
+        </div>
+    </div>
+    <div class="person_right">
+        <img src="images/clockcalen.png">打卡月历
+    </div>
+</div>
+<div class="calendar" id="calendar"></div>
+<div class="static_content">
+    <div><img src="images/static_time1.png">今日打卡2次</div>
+    <div class="clock_static">
+        <div class="onduty">
+            <div class="left_text"><span>上</span></div>
+            <div class="right_text">
+                <div class="ontitle">
+                    <span>上班打卡&emsp;09:00</span>
+                </div>
+                <!--已打卡-->
+                <div class="hasclock">
+                    <div>打卡时间：08:46:36</div>
+                    <div class="position hasposition"><img src="images/hasposition.png">某某某某附属小学</div>
+                    <div class="normal">正常</div>
+                </div>
+            </div>
+        </div>
+        <div class="topline"></div>
+        <div class="offduty">
+            <div class="left_text">
+                <span>下</span>
+            </div>
+            <div class="right_text">
+                <div class="ontitle">
+                    <span>下班打卡&emsp;18:00</span>
+                </div>
+                <!--已打卡-->
+                <div class="hasclock">
+                    <div>打卡时间：18:46:36</div>
+                    <div class="position hasposition" style="text-align: left"><img src="images/hasposition.png">某某某某附属小学</div>
+                    <div class="normal">正常</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--选择月历弹框-->
+<div class="box"></div>
+<div class="calenbox">
+
+</div>
+<script src="js/rem.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/calendar.js"></script>
+<script>
+    $('.box').click(function () {
+        $('.box,.calenbox').fadeOut();
+    });
+    $('.person_right').click(function () {
+       $('.box,.calenbox').fadeIn();
+    });
+</script>
+</body>
+</html>
