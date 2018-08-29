@@ -39,7 +39,7 @@ CREATE TABLE `attendance` (
 -- ----------------------------
 DROP TABLE IF EXISTS `miscellaneous`;
 CREATE TABLE `miscellaneous` (
-  `id` int(11) NOT NULL COMMENT '主键id',
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `to_work` varchar(32) DEFAULT NULL COMMENT '上班时间',
   `out_work` varchar(32) DEFAULT NULL COMMENT '下班时间',
   `is_legal_holidays` tinyint(1) DEFAULT NULL COMMENT '是否法定假日 1：不是 2：是',
