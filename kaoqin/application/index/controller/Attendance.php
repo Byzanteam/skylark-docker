@@ -32,13 +32,13 @@ class Attendance extends Controller
         if ($res) {
             $this->assign('res',$res);
             $this->assign('miscellaneous',$miscellaneous);
-            return $this->fetch('index@index/index');
+            return $this->fetch('index');
         } else {
             if ($res1){
                 $res1['u_id'] = $res1['id'];
                 $this->assign('res',$res1);
                 $this->assign('miscellaneous',$miscellaneous);
-                return $this->fetch('index@index/index');
+                return $this->fetch('index');
             }else{
                 return json_encode([
                     'code' => 200,
