@@ -9,13 +9,13 @@ class Index extends Controller
 {
     public function index()
     {
-        $url =Env::get('GER_URL').'/oauth/authorize';
+        $url =getenv('GER_URL').'/oauth/authorize';
 //        var_dump($url);exit;
         $data = [
-            'client_id'=>Env::get('GET_USER_CLIENT_ID'),
+            'client_id'=>getenv('GET_USER_CLIENT_ID'),
             'response_type'=>'code',
             'grant_type'=>'authorization_code',
-            'redirect_uri'=>Env::get('GET_USER_REDIRECT_URL').'/index/index/getuser'
+            'redirect_uri'=>getenv('GET_USER_REDIRECT_URL').'/index/index/getuser'
         ];
 //        $header = 'Authorization:3d06df76b958483cb6e36d59acfde7ef12a0b3a24587cc1476a776158145043d:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lc3BhY2VfaWQiOjF9.sBNW1M4e1SMYVq4oJhS6qu3rkk7FgzBgkryVK-L5dXA';//定义content-type为xml
         $ch = curl_init(); //初始化curl
@@ -36,14 +36,14 @@ class Index extends Controller
     public function getUser(){
 
         $code = $_GET['code'];
-        $url =Env::get('GER_URL').'/oauth/token';
+        $url =getenv('GER_URL').'/oauth/token';
 //        var_dump($url);exit;
         $data = [
-            'client_id'=>Env::get('GET_USER_CLIENT_ID'),
-            'client_secret'=>Env::get('GET_USER_CLIENT_SECRET'),
+            'client_id'=>getenv('GET_USER_CLIENT_ID'),
+            'client_secret'=>getenv('GET_USER_CLIENT_SECRET'),
             'code'=>$code,
             'grant_type'=>'authorization_code',
-            'redirect_uri'=>Env::get('GET_USER_REDIRECT_URL').'/index/index/getuser'
+            'redirect_uri'=>getenv('GET_USER_REDIRECT_URL').'/index/index/getuser'
         ];
 //        $header = 'Authorization:3d06df76b958483cb6e36d59acfde7ef12a0b3a24587cc1476a776158145043d:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lc3BhY2VfaWQiOjF9.sBNW1M4e1SMYVq4oJhS6qu3rkk7FgzBgkryVK-L5dXA';//定义content-type为xml
         $ch = curl_init(); //初始化curl
@@ -62,7 +62,7 @@ class Index extends Controller
         $token = $response->access_token;
 //        echo $token;exit;
         //获取用户信息
-        $url = Env::get('GER_URL').'/api/v1/user?access_token='.$token;//接收地址
+        $url = getenv('GER_URL').'/api/v1/user?access_token='.$token;//接收地址
 
 //        $header = 'Authorization:3d06df76b958483cb6e36d59acfde7ef12a0b3a24587cc1476a776158145043d:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lc3BhY2VfaWQiOjF9.sBNW1M4e1SMYVq4oJhS6qu3rkk7FgzBgkryVK-L5dXA';//定义content-type为xml
         $ch = curl_init(); //初始化curl
@@ -88,11 +88,11 @@ class Index extends Controller
     }
 
     public function import(){
-        $url = Env::get('GER_URL').'/api/v4/organizations/387/members?id=387&with_descendants=45';
+        $url = getenv('GER_URL').'/api/v4/organizations/387/members?id=387&with_descendants=45';
         $options = array(
             'http' => array(
                 'method' => 'GET',
-                'header' => 'Authorization:'.Env::get('INTERFACE_SIGNATURE'),
+                'header' => 'Authorization:'.getenv('INTERFACE_SIGNATURE'),
 
                 //'timeout' => 60 * 60 // 超时时间（单位:s）
             )

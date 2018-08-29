@@ -183,7 +183,7 @@ class App
             self::$suffix = $config['class_suffix'];
 
             // 应用调试模式
-            self::$debug = Env::get('app_debug', Config::get('app_debug'));
+            self::$debug = getenv('app_debug', Config::get('app_debug'));
 
             if (!self::$debug) {
                 ini_set('display_errors', 'Off');
