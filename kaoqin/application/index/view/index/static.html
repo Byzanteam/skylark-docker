@@ -11,7 +11,7 @@
 <body>
 <div class="person_infor">
     <div class="person_left">
-        <div><img src="{$users['headimgurl']}"></div>
+        <div><img src="{:getenv('GER_URL').$res['headimgurl']}"></div>
         <div>
             <div id="user_id" user_id="{$users['id']}">{$users['name']}</div>
             <div><span class="checkdate">2018-08-13</span>（星期<span class="week">四</span>）</div>
