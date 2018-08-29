@@ -68,7 +68,7 @@ class Index extends Controller
   }
 
   public function import(){
-    $url = getenv('GER_URL').'/api/v4/organizations/387/members?id=387&with_descendants=45';
+    $url = getenv('GER_URL').'/api/v4/organizations/'.getenv("ATTENDANCE_ORGANIZATION_ID").'/members?with_descendants=true&per_page=100';
     $options = array(
       'http' => array(
         'method' => 'GET',
