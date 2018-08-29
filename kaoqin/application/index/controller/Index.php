@@ -107,6 +107,8 @@ class Index extends Controller
         Db::rollback();
       }
 
+    } else {
+      $res = Db::name('users')->insertAll($results);
     }
 
 
