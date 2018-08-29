@@ -57,7 +57,7 @@ CREATE TABLE `users` (
   `nickname` varchar(255) DEFAULT NULL COMMENT '描述',
   `sex` tinyint(1) DEFAULT NULL COMMENT '性别:',
   `phone` char(12) DEFAULT NULL COMMENT '电话号码',
-  `identifier` char(12) DEFAULT NULL,
+  `identifier` varchar(64) DEFAULT NULL,
   `openid` varchar(64) DEFAULT NULL,
   `created_at` varchar(128) DEFAULT NULL COMMENT '创建时间',
   `updated_at` varchar(128) DEFAULT NULL COMMENT '修改时间',
