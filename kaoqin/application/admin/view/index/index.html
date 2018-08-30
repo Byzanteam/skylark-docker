@@ -176,7 +176,7 @@
         };
         console.log($data);
         $.get("{:url('admin/index/setTime')}",$data,function (res) {
-
+            alert('设置成功');
             $('.time_to_work').val(res.to_work);
             $('.time_old_work').val(res.out_work);
             // $('#queren'),attr('val',2)

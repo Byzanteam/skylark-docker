@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 
+use jssdk\JSSDK;
 use think\Controller;
 use think\Db;
 
@@ -8,9 +9,11 @@ class Attendance extends Controller
 {
     public function index()
     {
-//        $user_id = request()->get('id');
-//        $id = request()->get('user_id');
+        $appid = getenv('POSITION_APPID');
+        $secret = getenv('POSITION_SECRET');
+        $jssdk = new JSSDK($appid,$secret);
         $id = input('param.user_id');
+        $signPackage = $jssdk->GetSignPackage();
 
 //        var_dump($id);exit;
 //        var_dump($id);exit;
@@ -32,12 +35,14 @@ class Attendance extends Controller
         if ($res) {
             $this->assign('res',$res);
             $this->assign('miscellaneous',$miscellaneous);
+            $this->assign('signPackage',$signPackage);
             return $this->fetch('index');
         } else {
             if ($res1){
                 $res1['u_id'] = $res1['id'];
                 $this->assign('res',$res1);
                 $this->assign('miscellaneous',$miscellaneous);
+                $this->assign('signPackage',$signPackage);
                 return $this->fetch('index');
             }else{
                 return json_encode([

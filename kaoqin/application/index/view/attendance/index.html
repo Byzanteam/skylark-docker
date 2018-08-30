@@ -6,9 +6,6 @@
     <title>考勤打卡</title>
     <link rel="stylesheet" href="/static/css/normal-HSY.css">
     <link rel="stylesheet" href="/static/css/index.css">
-    <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
-    <script type="text/javascript" src="//webapi.amap.com/maps?v=1.4.9&key=e869665046d08192a2d5f307fed4ae54"></script>
-    <script type="text/javascript" src="//cache.amap.com/lbs/static/addToolbar.js"></script>
 </head>
 <style>
     #container {width:300px; height: 180px;}
@@ -40,7 +37,7 @@
     <div class="header-content">
         <div><img src="{:getenv('GER_URL').$res['headimgurl']}"></div>
         <div>{$res['name']}</div>
-        <div>{$miscellaneous['company_name']}</div>
+        <div>附属中学</div>
         <div class="calendar">
             <img src="/static/images/calendar.png">
             <span class="todaydate">{:date('Y-m-d',time())}</span>
@@ -157,47 +154,65 @@
 <!--<div id="tip"></div>-->
 <script src="/static/js/rem.js"></script>
 <script src="/static/js/jquery.min.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <!--定位-->
 <script type="text/javascript">
-    /***************************************
-     由于Chrome、IOS10等已不再支持非安全域的浏览器定位请求，为保证定位成功率和精度，请尽快升级您的站点到HTTPS。
-     ***************************************/
-    var map, geolocation;
-    //加载地图，调用浏览器定位服务
-    map = new AMap.Map('container', {
-        resizeEnable: true
-    });
-    map.plugin('AMap.Geolocation', function() {
-        geolocation = new AMap.Geolocation({
-            enableHighAccuracy: true,//是否使用高精度定位，默认:true
-            timeout: 10000,          //超过10秒后停止定位，默认：无穷大
-            buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
-            zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
-            buttonPosition:'RB'
-        });
-        map.addControl(geolocation);
-        geolocation.getCurrentPosition();
-        AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
-        AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
-    });
-    //解析定位结果
-    function onComplete(data) {
+    wx.config({
+//        debug:true,
+        appId: "{$signPackage.appId}",
+        timestamp: '{$signPackage.timestamp}',
+        nonceStr: '{$signPackage.nonceStr}',
+        signature: '{$signPackage.signature}',
+        jsApiList: [
+            'checkJsApi',
+            'onMenuShareTimeline',
+            'onMenuShareAppMessage',
+            'onMenuShareQQ',
+            'onMenuShareWeibo'
+        ]
 
-        $.get('https://restapi.amap.com/v3/geocode/regeo?key=e869665046d08192a2d5f307fed4ae54&location='+data.position.getLng()+','+data.position.getLat()+'&radius=1000&extensions=all&batch=false&roadlevel=0','',function (res) {
-            $('.position_card').html(res.regeocode.formatted_address)
-            $('#position_to_work').attr('position',res.regeocode.formatted_address)
-            $('#position_out_work').attr('position',res.regeocode.formatted_address)
-            $('#remark_address').html(res.regeocode.formatted_address)
-            $('#position_to_work').addClass('work')
-            $('#position_out_work').addClass('go_work')
-        })
-    }
+    });
 
-    //解析定位错误信息
-    function onError(data) {
-        $('#position_card').html('定位失败');
-    }
+    //通过ready接口处理成功验证，加载直接调用的程序放在ready中，这里目前为空
+    wx.ready(function () {
+        wx.getLocation({
+            success: function (res) {
+//                alert(JSON.stringify(res));
+                var latitude = res.latitude; //纬度
+                var longitude = res.longitude; //经度
+                $.ajax({
+                    url: "{:url('index/index/tencent')}",
+                    type: "POST",
+                    data: JSON.stringify(res),
+                    dataType: "json",
+                    success: function(json){
+                        var latitudeNew = json.latitudeNew;
+                        var longitudeNew = json.longitudeNew;
+                        if (json.status==0){
+                            $('.position_card').html(json.address)
+                            $('#position_to_work').attr('position',json.address)
+                            $('#position_out_work').attr('position',json.address)
+                            $('#remark_address').html(json.address)
+                            $('#position_to_work').addClass('work')
+                            $('#position_out_work').addClass('go_work')
+                        }
+                    },
+                    error: function(){
+                        alert("有错误！");
+                    }
+                });//end ajax
+            },
+            cancel: function (res) {
+                alert('用户拒绝授权获取地理位置');
+            },
+            fail: function (res) {
+//                alert(JSON.stringify(res));
+            }
+        });//end wx.getLocation
+
+    });
 </script>
+
 <script>
 //    window.onload  = function () {
 //        getUserPositionInfo()

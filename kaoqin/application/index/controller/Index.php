@@ -7,6 +7,33 @@ use think\Env;
 
 class Index extends Controller
 {
+    //转换为腾讯坐标
+    public function tencent(){
+        $data = file_get_contents('php://input');
+//        echo json_encode($data);exit;
+        $newData = json_decode($data,true);
+        $latitude = $newData["latitude"];
+        $longitude = $newData["longitude"];
+
+
+        //腾讯地图坐标转换官网：http://lbs.qq.com/webservice_v1/guide-convert.html
+
+        $q = "http://apis.map.qq.com/ws/coord/v1/translate?locations=".$latitude.",".$longitude."&type=1&key=".getenv('TENCENT_KEY');
+        $resultQ = json_decode(file_get_contents($q),true);
+//        echo $resultQ["locations"][0]["lat"];exit;
+
+        $latitudeNew = $resultQ["locations"][0]["lat"];
+        $longitudeNew = $resultQ["locations"][0]["lng"];
+
+
+        $address = "https://apis.map.qq.com/ws/geocoder/v1/?location=".$latitudeNew.",".$longitudeNew."&key=".getenv('TENCENT_KEY')."&get_poi=1";
+        $address = json_decode(file_get_contents($address),true);
+        $address_true = $address['result']['formatted_addresses']['recommend'];
+        $status = $address['status'];
+        $returnDataArray = array("address"=>$address_true,"status"=>$status);
+        $returnData = json_encode($returnDataArray);
+        echo $returnData;
+    }
   public function index()
   {
     $url = getenv('GER_URL').'/oauth/authorize?client_id='.getenv('GET_USER_CLIENT_ID').'&redirect_uri='.getenv('GET_USER_REDIRECT_URL').'/index/index/getuser&response_type=code';
