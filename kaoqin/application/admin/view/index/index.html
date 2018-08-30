@@ -176,7 +176,7 @@
         };
         console.log($data);
         $.get("{:url('admin/index/setTime')}",$data,function (res) {
-
+            alert('设置成功');
             $('.time_to_work').val(res.to_work);
             $('.time_old_work').val(res.out_work);
             // $('#queren'),attr('val',2)
@@ -222,7 +222,7 @@
         $.get("{:url('admin/index/search')}",data,function (res) {
             var html =''
            $.each(res,function (i,v) {
-               html+='<tr><td>'+v.time_day+'</td<tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
+               html+='<tr><td>'+v.time_day+'</td><tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
            })
             console.log()
             $('tbody').html(html)
@@ -270,7 +270,7 @@
         $.get("{:url('admin/index/search')}",data,function (res) {
             var html =''
             $.each(res,function (i,v) {
-                html+='<tr><td>'+v.time_day+'</td<tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
+                html+='<tr><td>'+v.time_day+'</td><tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
             })
             $('tbody').html(html)
         },'json')
@@ -299,7 +299,7 @@
         $.get("{:url('admin/index/search_time')}",data,function (res) {
             var html =''
             $.each(res,function (i,v) {
-                html+='<tr><td>'+v.time_day+'</td<tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
+                html+='<tr><td>'+v.time_day+'</td><tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
             })
             console.log()
             $('tbody').html(html)
@@ -346,7 +346,7 @@
         $.get("{:url('admin/index/search')}",data,function (res) {
             var html =''
             $.each(res,function (i,v) {
-                html+='<tr><td>'+v.time_day+'</td<tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
+                html+='<tr><td>'+v.time_day+'</td><tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
             })
             console.log()
             $('tbody').html(html)
