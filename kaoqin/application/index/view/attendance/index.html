@@ -183,7 +183,7 @@
                 $.ajax({
                     url: "{:url('index/index/tencent')}",
                     type: "POST",
-                    data: JSON.stringify(res),
+                    data: {"address":JSON.stringify(res)},
                     dataType: "json",
                     success: function(json){
                         var latitudeNew = json.latitudeNew;
