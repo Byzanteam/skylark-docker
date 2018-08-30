@@ -9,7 +9,7 @@ class Index extends Controller
 {
     //转换为腾讯坐标
     public function tencent(){
-        $data = file_get_contents('php://input');
+        $data = $_POST('address');
 //        echo json_encode($data);exit;
         $newData = json_decode($data,true);
         $latitude = $newData["latitude"];
@@ -20,7 +20,7 @@ class Index extends Controller
 
         $q = "http://apis.map.qq.com/ws/coord/v1/translate?locations=".$latitude.",".$longitude."&type=1&key=".getenv('TENCENT_KEY');
         $resultQ = json_decode(file_get_contents($q),true);
-       echo $resultQ["locations"][0]["lat"];exit；
+       echo json_encode();exit；
 
         $latitudeNew = $resultQ["locations"][0]["lat"];
         $longitudeNew = $resultQ["locations"][0]["lng"];
