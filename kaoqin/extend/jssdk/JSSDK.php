@@ -70,7 +70,7 @@ class JSSDK {
 
         // jsapi_ticket 应该全局存储与更新，以下代码以写入到文件中做示例
 
-        $data = json_decode(file_get_contents(ROOT_PATH."jsapi_ticket.json"));
+        $data = json_decode(file_get_contents(APP_PATH."../jsapi_ticket.json"));
 
         if ($data->expire_time < time()) {
 
@@ -88,7 +88,7 @@ class JSSDK {
 
                 $data->jsapi_ticket = $ticket;
 
-                $fp = fopen(ROOT_PATH."jsapi_ticket.json", "w");
+                $fp = fopen(APP_PATH."../jsapi_ticket.json", "w");
 
                 fwrite($fp, json_encode($data));
 
@@ -110,7 +110,7 @@ class JSSDK {
 
         // access_token 应该全局存储与更新，以下代码以写入到文件中做示例
 
-        $data = json_decode(file_get_contents(ROOT_PATH."access_token.json"));
+        $data = json_decode(file_get_contents(APP_PATH."../access_token.json"));
 
         if ($data->expire_time < time()) {
 
@@ -126,7 +126,7 @@ class JSSDK {
 
                 $data->access_token = $access_token;
 
-                $fp = fopen(ROOT_PATH."access_token.json", "w");
+                $fp = fopen(APP_PATH."../access_token.json", "w");
 
                 fwrite($fp, json_encode($data));
 
