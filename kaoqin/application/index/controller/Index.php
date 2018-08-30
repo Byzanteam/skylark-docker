@@ -20,13 +20,14 @@ class Index extends Controller
 
         $q = "http://apis.map.qq.com/ws/coord/v1/translate?locations=".$latitude.",".$longitude."&type=1&key=".getenv('TENCENT_KEY');
         $resultQ = json_decode(file_get_contents($q),true);
-//        echo $resultQ["locations"][0]["lat"];exit;
+       echo $resultQ["locations"][0]["lat"];
 
         $latitudeNew = $resultQ["locations"][0]["lat"];
         $longitudeNew = $resultQ["locations"][0]["lng"];
 
 
         $address = "https://apis.map.qq.com/ws/geocoder/v1/?location=".$latitudeNew.",".$longitudeNew."&key=".getenv('TENCENT_KEY')."&get_poi=1";
+        echo $address;exit;
         $address = json_decode(file_get_contents($address),true);
         $address_true = $address['result']['formatted_addresses']['recommend'];
         $status = $address['status'];
