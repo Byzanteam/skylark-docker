@@ -32,7 +32,7 @@ class Index extends Controller {
                             'url'=>getenv('GER_URL').'/oauth/authorize?client_id='.getenv('GET_USER_CLIENT_ID').'&redirect_uri='.getenv('GET_USER_REDIRECT_URL').'/index/index/getuser&response_type=code',
                             "picurl"=>getenv('SHOW_PIC')],
                         'template_entity'=>(object)[
-                            'template_entity'=>getenv('TEMPLATE_ID'),
+                            'template_id'=>getenv('TEMPLATE_ID'),
                             'url'=>getenv('GER_URL').'/oauth/authorize?client_id='.getenv('GET_USER_CLIENT_ID').'&redirect_uri='.getenv('GET_USER_REDIRECT_URL').'/index/index/getuser&response_type=code',
                             'data'=>[
                                 'first'=>[
@@ -88,7 +88,7 @@ class Index extends Controller {
                             'url'=>getenv('GER_URL').'/oauth/authorize?client_id='.getenv('GET_USER_CLIENT_ID').'&redirect_uri='.getenv('GET_USER_REDIRECT_URL').'/index/index/getuser&response_type=code',
                             "picurl"=>getenv('SHOW_PIC')],
                         'template_entity'=>(object)[
-                            'template_entity'=>getenv('TEMPLATE_ID'),
+                            'template_id'=>getenv('TEMPLATE_ID'),
                             'url'=>getenv('GER_URL').'/oauth/authorize?client_id='.getenv('GET_USER_CLIENT_ID').'&redirect_uri='.getenv('GET_USER_REDIRECT_URL').'/index/index/getuser&response_type=code',
                             'data'=>[
                                 'first'=>[
@@ -159,7 +159,7 @@ class Index extends Controller {
                             'url'=>getenv('GER_URL').'/oauth/authorize?client_id='.getenv('GET_USER_CLIENT_ID').'&redirect_uri='.getenv('GET_USER_REDIRECT_URL').'/index/index/getuser&response_type=code',
                             "picurl"=>getenv('SHOW_PIC')],
                         'template_entity'=>(object)[
-                            'template_entity'=>getenv('TEMPLATE_ID'),
+                            'template_id'=>getenv('TEMPLATE_ID'),
                             'url'=>getenv('GER_URL').'/oauth/authorize?client_id='.getenv('GET_USER_CLIENT_ID').'&redirect_uri='.getenv('GET_USER_REDIRECT_URL').'/index/index/getuser&response_type=code',
                             'data'=>[
                                 'first'=>[
@@ -214,7 +214,7 @@ class Index extends Controller {
                             'url'=>getenv('GER_URL').'/oauth/authorize?client_id='.getenv('GET_USER_CLIENT_ID').'&redirect_uri='.getenv('GET_USER_REDIRECT_URL').'/index/index/getuser&response_type=code',
                             "picurl"=>getenv('SHOW_PIC')],
                         'template_entity'=>(object)[
-                            'template_entity'=>getenv('TEMPLATE_ID'),
+                            'template_id'=>getenv('TEMPLATE_ID'),
                             'url'=>getenv('GER_URL').'/oauth/authorize?client_id='.getenv('GET_USER_CLIENT_ID').'&redirect_uri='.getenv('GET_USER_REDIRECT_URL').'/index/index/getuser&response_type=code',
                             'data'=>[
                                 'first'=>[
