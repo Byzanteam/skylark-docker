@@ -67,7 +67,7 @@
                 <div class="hasclock" style="{:isset($res['morning_time'])&&!empty($res['morning_time'])?'':'display:none'}">
                     <div>打卡时间：{:isset($res['morning_time'])?$res['morning_time']:''}<span class="late" style="{:isset($res['is_morning_status'])&&($res['is_morning_status']==2)?'':'display:none'}" >迟到</span></div>
                     <div class="position hasposition"><img src="/static/images/hasposition.png">{:empty($res['morning_address'])?:$res['morning_address']}</div>
-                    <div class="updateclock" style="{:date('H',time())>=9?'display:none':''}">更新打卡</div>
+                    <div class="updateclock" position="" id="update_card" style="{:date('H',time())>=9?'display:none':''}">更新打卡</div>
                 </div>
             </div>
 
@@ -192,7 +192,9 @@
                             $('.position_card').html(json.address)
                             $('#position_to_work').attr('position',json.address)
                             $('#position_out_work').attr('position',json.address)
+                            $('#update_card').attr('position',json.address)
                             $('#remark_address').html(json.address)
+                            $('#update_card').addClass('work')
                             $('#position_to_work').addClass('work')
                             $('#position_out_work').addClass('go_work')
                         }
