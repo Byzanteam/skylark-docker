@@ -89,19 +89,7 @@ class JSSDK {
 
             $ticket = $results['ticket'];
 
-            if ($ticket) {
-
-                $data->expire_time = time() + 7000;
-
-                $data->jsapi_ticket = $ticket;
-
-                $fp = fopen(APP_PATH."../jsapi_ticket.json", "w");
-
-                fwrite($fp, json_encode($data));
-
-                fclose($fp);
-
-            }
+            return $ticket;
 
         } else {
 
