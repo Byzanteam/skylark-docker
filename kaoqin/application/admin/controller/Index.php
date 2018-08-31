@@ -32,15 +32,15 @@ class Index extends Controller {
                             'url'=>getenv('GER_URL').'/oauth/authorize?client_id='.getenv('GET_USER_CLIENT_ID').'&redirect_uri='.getenv('GET_USER_REDIRECT_URL').'/index/index/getuser&response_type=code',
                             "picurl"=>getenv('SHOW_PIC')],
                         'template_entity'=>(object)[
-                            'template_entity'=>'PPa-zE5EyBO1LCaWIWtMYXNVy5AEosufbhdj-5Z-6Fw',
+                            'template_entity'=>getenv('TEMPLATE_ID'),
                             'url'=>getenv('GER_URL').'/oauth/authorize?client_id='.getenv('GET_USER_CLIENT_ID').'&redirect_uri='.getenv('GET_USER_REDIRECT_URL').'/index/index/getuser&response_type=code',
                             'data'=>[
                                 'first'=>[
-                                    'value'=>'您好!你有一条考勤打卡提醒',
+                                    'value'=>$user['name'].'您好!你有一条考勤打卡提醒',
                                     'color'=>'#173177'
                                 ],
                                 'keyword1'=>[
-                                    'value'=>$user['name'],
+                                    'value'=>"上班打卡",
                                     'color'=>'#173177'
                                 ],
                                 'keyword2'=>[
@@ -48,11 +48,11 @@ class Index extends Controller {
                                     'color'=>'#173177'
                                 ],
                                 'keyword3'=>[
-                                    'value'=>'上班未打卡',
+                                    'value'=>'校园内',
                                     'color'=>'#173177'
                                 ],
                                 'remark'=>[
-                                    'value'=>'上班时间为:'.$miscellaneous['to_work'].',请别忘记打卡',
+                                    'value'=>'上班时间为:'.$miscellaneous['to_work'].',请别忘记打卡哟',
                                     'color'=>'#173177'
                                 ]
 
@@ -88,15 +88,15 @@ class Index extends Controller {
                             'url'=>getenv('GER_URL').'/oauth/authorize?client_id='.getenv('GET_USER_CLIENT_ID').'&redirect_uri='.getenv('GET_USER_REDIRECT_URL').'/index/index/getuser&response_type=code',
                             "picurl"=>getenv('SHOW_PIC')],
                         'template_entity'=>(object)[
-                            'template_entity'=>'PPa-zE5EyBO1LCaWIWtMYXNVy5AEosufbhdj-5Z-6Fw',
+                            'template_entity'=>getenv('TEMPLATE_ID'),
                             'url'=>getenv('GER_URL').'/oauth/authorize?client_id='.getenv('GET_USER_CLIENT_ID').'&redirect_uri='.getenv('GET_USER_REDIRECT_URL').'/index/index/getuser&response_type=code',
                             'data'=>[
                                 'first'=>[
-                                    'value'=>'您好!你有一条考勤打卡提醒',
+                                    'value'=>$user['name'].'您好!你有一条考勤打卡提醒',
                                     'color'=>'#173177'
                                 ],
                                 'keyword1'=>[
-                                    'value'=>$user['name'],
+                                    'value'=>"上班打卡",
                                     'color'=>'#173177'
                                 ],
                                 'keyword2'=>[
@@ -104,11 +104,11 @@ class Index extends Controller {
                                     'color'=>'#173177'
                                 ],
                                 'keyword3'=>[
-                                    'value'=>'上班未打卡',
+                                    'value'=>'校园内',
                                     'color'=>'#173177'
                                 ],
                                 'remark'=>[
-                                    'value'=>'上班时间为:'.$miscellaneous['to_work'].',请别忘记打卡',
+                                    'value'=>'上班时间为:'.$miscellaneous['to_work'].',请别忘记打卡哟',
                                     'color'=>'#173177'
                                 ]
 
@@ -159,15 +159,15 @@ class Index extends Controller {
                             'url'=>getenv('GER_URL').'/oauth/authorize?client_id='.getenv('GET_USER_CLIENT_ID').'&redirect_uri='.getenv('GET_USER_REDIRECT_URL').'/index/index/getuser&response_type=code',
                             "picurl"=>getenv('SHOW_PIC')],
                         'template_entity'=>(object)[
-                            'template_entity'=>'PPa-zE5EyBO1LCaWIWtMYXNVy5AEosufbhdj-5Z-6Fw',
+                            'template_entity'=>getenv('TEMPLATE_ID'),
                             'url'=>getenv('GER_URL').'/oauth/authorize?client_id='.getenv('GET_USER_CLIENT_ID').'&redirect_uri='.getenv('GET_USER_REDIRECT_URL').'/index/index/getuser&response_type=code',
                             'data'=>[
                                 'first'=>[
-                                    'value'=>'您好!你有一条考勤打卡提醒',
+                                    'value'=>$user['name'].'您好!你有一条考勤打卡提醒',
                                     'color'=>'#173177'
                                 ],
                                 'keyword1'=>[
-                                    'value'=>$user['name'],
+                                    'value'=>"下班打卡",
                                     'color'=>'#173177'
                                 ],
                                 'keyword2'=>[
@@ -175,11 +175,11 @@ class Index extends Controller {
                                     'color'=>'#173177'
                                 ],
                                 'keyword3'=>[
-                                    'value'=>'下班未打卡',
+                                    'value'=>'校园内',
                                     'color'=>'#173177'
                                 ],
                                 'remark'=>[
-                                    'value'=>'下班时间为:'.$miscellaneous['out_work'].',请别忘记打卡',
+                                    'value'=>'下班时间为:'.$miscellaneous['out_work'].',请别忘记打卡哟',
                                     'color'=>'#173177'
                                 ]
 
@@ -214,15 +214,15 @@ class Index extends Controller {
                             'url'=>getenv('GER_URL').'/oauth/authorize?client_id='.getenv('GET_USER_CLIENT_ID').'&redirect_uri='.getenv('GET_USER_REDIRECT_URL').'/index/index/getuser&response_type=code',
                             "picurl"=>getenv('SHOW_PIC')],
                         'template_entity'=>(object)[
-                            'template_entity'=>'PPa-zE5EyBO1LCaWIWtMYXNVy5AEosufbhdj-5Z-6Fw',
+                            'template_entity'=>getenv('TEMPLATE_ID'),
                             'url'=>getenv('GER_URL').'/oauth/authorize?client_id='.getenv('GET_USER_CLIENT_ID').'&redirect_uri='.getenv('GET_USER_REDIRECT_URL').'/index/index/getuser&response_type=code',
                             'data'=>[
                                 'first'=>[
-                                    'value'=>'您好!你有一条考勤打卡提醒',
+                                    'value'=>$user['name'].'您好!你有一条考勤打卡提醒',
                                     'color'=>'#173177'
                                 ],
                                 'keyword1'=>[
-                                    'value'=>$user['name'],
+                                    'value'=>"下班打卡",
                                     'color'=>'#173177'
                                 ],
                                 'keyword2'=>[
@@ -230,11 +230,11 @@ class Index extends Controller {
                                     'color'=>'#173177'
                                 ],
                                 'keyword3'=>[
-                                    'value'=>'下班未打卡',
+                                    'value'=>'校园内',
                                     'color'=>'#173177'
                                 ],
                                 'remark'=>[
-                                    'value'=>'下班时间为:'.$miscellaneous['to_work'].',请别忘记打卡',
+                                    'value'=>'下班时间为:'.$miscellaneous['to_work'].',请别忘记打卡哟',
                                     'color'=>'#173177'
                                 ]
 
