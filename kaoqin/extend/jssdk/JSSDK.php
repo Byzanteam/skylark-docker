@@ -75,7 +75,7 @@ class JSSDK {
         if ($data->expire_time < time()) {
 
 //            $accessToken = $this->getAccessToken();
-            $url = Env::get('GER_URL').'/api/v4/wechat_clients/jsapi_tickets';
+            $url = Env::get('GER_URL').'/api/v4/wechat_clients/jsapi_ticket';
             $options = array(
                 'http' => array(
                     'method' => 'GET',
