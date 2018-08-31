@@ -71,7 +71,7 @@ class Index extends Controller {
                     if(curl_errno($ch)){//出错则显示错误信息
                         print curl_error($ch);
                     }
-                    var_dump($response);exit;
+
                     curl_close($ch); //关闭curl链接
                 }
             }
@@ -127,7 +127,7 @@ class Index extends Controller {
                     if(curl_errno($ch)){//出错则显示错误信息
                         print curl_error($ch);
                     }
-                    var_dump($response);exit;
+
                     curl_close($ch); //关闭curl链接
                 }
             }
@@ -198,7 +198,7 @@ class Index extends Controller {
                     if(curl_errno($ch)){//出错则显示错误信息
                         print curl_error($ch);
                     }
-                    var_dump($response);exit;
+
                     curl_close($ch); //关闭curl链接
                 }
             }
@@ -253,7 +253,7 @@ class Index extends Controller {
                     if(curl_errno($ch)){//出错则显示错误信息
                         print curl_error($ch);
                     }
-                    var_dump($response);exit;
+
                     curl_close($ch); //关闭curl链接
                 }
             }
