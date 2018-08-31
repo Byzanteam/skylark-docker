@@ -74,13 +74,21 @@ class JSSDK {
 
         if ($data->expire_time < time()) {
 
-            $accessToken = $this->getAccessToken();
+//            $accessToken = $this->getAccessToken();
+            $url = Env::get('GER_URL').'/api/v4/wechat_clients/jsapi_tickets';
+            $options = array(
+                'http' => array(
+                    'method' => 'GET',
+                    'header' => 'Authorization:'.getenv('INTERFACE_SIGNATURE'),
+                )
+            );
+            $context = stream_context_create($options);
 
-            $url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token=$accessToken";
+            $result = file_get_contents($url,false,$context);
 
-            $res = json_decode($this->httpGet($url));
+            $results = json_decode($result,true);
 
-            $ticket = $res->ticket;
+            $ticket = $results['ticket'];
 
             if ($ticket) {
 
