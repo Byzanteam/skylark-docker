@@ -65,7 +65,7 @@ class JSSDK {
         // jsapi_ticket 应该全局存储与更新，以下代码以写入到文件中做示例
         $ticket = Session::get('ticket');
         $expired_at =Session::get('expired_at');
-        if (!empty($ticket)&&(time()>$expired_at)){
+        if (!empty($ticket)&&(time()<$expired_at)){
             return $ticket;
         }else{
             $url = getenv('GER_URL').'/api/v4/wechat_clients/jsapi_ticket';

@@ -16,7 +16,8 @@
     <div class="header_right">
         <!--<img src="/houtai/images/setting.png">-->
         <!--<span>更新数据</span>-->
-        <img src="/houtai/images/head.png">
+        <span class="open_setting">考勤时间设置</span>
+        <img style="width: 20px;padding-left: 20px" src="/houtai/images/head.png">
         <span>{$users['principal']}</span>
     </div>
 </div>
@@ -38,7 +39,7 @@
                     &nbsp;至&nbsp;
                     <input type="date" id="search_end_time" placeholder="截止时间">
                     <button type="button" class="search" id="search_time">搜索</button>
-                    <button type="button" class="search" id="update_data">更新数据</button>
+                    <!--<button type="button" class="search" id="update_data">更新数据</button>-->
                 </div>
             </div>
             <div class="select_one">
@@ -55,6 +56,12 @@
                     <input id="user_name" type="text" placeholder="输入用户名">
                     <button type="button" class="search">搜索</button>
                 </div>
+            </div>
+            <div class="select_two">
+                <ul class="operation_data">
+                    <li class="update_data">更新数据</li>
+                    <li class="export_data">导出数据</li>
+                </ul>
             </div>
         </div>
         <div class="static_list">
@@ -92,56 +99,61 @@
             </div>
 
         </div>
-        {$results->render()}
+        <span id="page">{$results->render()}</span>
     </div>
-    <div class="setting">
-        <div>考勤时间设置</div>
-        <div class="setting_content">
-            <div>
-                <div>类型</div>
-                <div class="clocktype">
-                    <div class="selecttype" id="is_working_day"><img src="/houtai/images/check.png">法定工作日</div>
-                    <div class="selecttype" id="no_working_day"><img src="/houtai/images/checkno.png">非工作日</div>
+    <div class="model-setting">
+        <div class="setting">
+            <div>考勤时间设置<span class="close_setting" style="float: right; margin: 0 20px;color: rgba(0,0,0,0.6);cursor: pointer;">X</span></div>
+            <div class="setting_content">
+                <div>
+                    <div>类型</div>
+                    <div class="clocktype">
+                        <div class="selecttype" id="is_working_day"><img src="/houtai/images/check.png">法定工作日</div>
+                        <div class="selecttype" id="no_working_day"><img src="/houtai/images/checkno.png">非工作日</div>
+                    </div>
+                </div>
+                <div>
+                    <div>上班时间</div>
+                    <div class="jeinpbox"><input type="text" class="jeinput time_to_work" id="start" placeholder="hh:mm:ss"></div>
+                </div>
+                <div>
+                    <div>下班时间</div>
+                    <div class="jeinpbox"><input type="text" class="jeinput time_old_work" id="end" placeholder="hh:mm:ss"></div>
                 </div>
             </div>
-            <div>
-                <div>上班时间</div>
-                <div class="jeinpbox"><input type="text" class="jeinput time_to_work" id="start" placeholder="hh:mm:ss"></div>
+            <div class="footbtn">
+                <div val="1" id="queren">确定</div>
+                <div>取消</div>
             </div>
-            <div>
-                <div>下班时间</div>
-                <div class="jeinpbox"><input type="text" class="jeinput time_old_work" id="end" placeholder="hh:mm:ss"></div>
-            </div>
-        </div>
-        <div class="footbtn">
-            <div val="1" id="queren">确定</div>
-            <div>取消</div>
         </div>
     </div>
+
 </div>
 <script src="/houtai/js/jquery.min.js"></script>
 <script src="/houtai/js/jedate.js"></script>
 <script src="/houtai/js/paging.js"></script>
 <script>
     $(function () {
-        $('#is_working_day').click()
+        $('#is_working_day').click();
     })
+
+
     var timevalue,statusvalue,typevalue;
-//    开始时间
+    //    开始时间
     var starttime = jeDate("#start",{
 //        minDate:"01:02:08",              //最小日期
 //        maxDate:"15:25:35",              //最大日期
         format: "hh:mm:ss"
     });
-//    结束时间
+    //    结束时间
     var endtime = jeDate("#end",{
         format: "hh:mm:ss"
     });
     //时间范围
     $('.time').on('click','.timeselect',function () {
-       var index=$(this).index();
-       $('.timeselect').removeClass("selectstyle").eq(index).addClass("selectstyle");
-       timevalue=index;
+        var index=$(this).index();
+        $('.timeselect').removeClass("selectstyle").eq(index).addClass("selectstyle");
+        timevalue=index;
     });
     //状态
     $('.status').on('click','.statusselect',function () {
@@ -150,21 +162,21 @@
         statusvalue=index;
     });
     //工作时间设置
-    $(document).on('click','#is_working_day',function () {
+    $('.setting').on('click','#is_working_day',function () {
         $.get("{:url('admin/index/getTime')}",{'status':1},function (res) {
             $('.time_to_work').val(res.to_work);
             $('.time_old_work').val(res.out_work);
             $('#queren').attr('val',1)
         },'json')
     })
-    $(document).on('click','#no_working_day',function () {
+    $('.setting').on('click','#no_working_day',function () {
         $.get("{:url('admin/index/getTime')}",{'status':2},function (res) {
             $('.time_to_work').val(res.to_work);
             $('.time_old_work').val(res.out_work);
             $('#queren').attr('val',2)
         },'json')
     })
-    $(document).on('click','#queren',function () {
+    $('.setting').on('click','#queren',function () {
         var status = $(this).attr('val');
         var to_work = $('.time_to_work').val();
         var out_work = $('.time_old_work').val();
@@ -176,10 +188,12 @@
         };
         console.log($data);
         $.get("{:url('admin/index/setTime')}",$data,function (res) {
-            alert('设置成功');
+
             $('.time_to_work').val(res.to_work);
             $('.time_old_work').val(res.out_work);
             // $('#queren'),attr('val',2)
+            alert('设置成功')
+            $('.model-setting').css("display", "none")
         },'json')
     })
     //条件筛选
@@ -221,16 +235,15 @@
         }
         $.get("{:url('admin/index/search')}",data,function (res) {
             var html =''
-           $.each(res,function (i,v) {
-               html+='<tr><td>'+v.time_day+'</td<tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
-           })
-            console.log()
-            $('tbody').html(html)
-        },'json')
+            console.log(res);
+            $.each(res,function (i,v) {
 
-    })
+                html+='<tr><td>'+v.time_day+'</td<tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
+            });
+            $('tbody').html(html);
+        },'json')
+    });
     $(document).on('click','.statusselect',function () {
-        // console.log(11);
         var status = $(this).attr('att');
         var is_status='';
         if(status =='normal'){
@@ -268,11 +281,11 @@
             'user_name':user_name
         }
         $.get("{:url('admin/index/search')}",data,function (res) {
-            var html =''
+            var html ='';
             $.each(res,function (i,v) {
                 html+='<tr><td>'+v.time_day+'</td<tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
             })
-            $('tbody').html(html)
+            $('tbody').html(html);
         },'json')
 
     })
@@ -307,7 +320,7 @@
 
     })
     //用户名搜索
-    $(document).on('click','.search',function () {
+    $('.select_one').on('click','.search',function () {
         var att = $('.time>.selectstyle').attr('att');
         var date=new Date();
         var year=date.getFullYear();
@@ -348,40 +361,64 @@
             $.each(res,function (i,v) {
                 html+='<tr><td>'+v.time_day+'</td<tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
             })
-            console.log()
             $('tbody').html(html)
         },'json')
     })
-//    考勤类型选择
+    //    考勤类型选择
     $('.selecttype').click(function () {
-       var index=$(this).index();
-       $('.selecttype img').attr("src","/houtai/images/checkno.png").eq(index).attr("src","/houtai/images/check.png");
-       typevalue=index;
+        var index=$(this).index();
+        $('.selecttype img').attr("src","/houtai/images/checkno.png").eq(index).attr("src","/houtai/images/check.png");
+        typevalue=index;
     });
-   // ajaxTest(1);
-   //  function ajaxTest(num) {//num为当前第几页
-   //     $.ajax({
-   //         url:'',
-   //         type:'',
-   //         dataType:'',
-   //         success:function(ret){
-   //             $('.datatotal').html(ret.total);//总数
-   //             $('.datapage').html(num);//当前页数
-   //             $('.datapagetotal').html(ret.page_total);//总页数
-   //             //分页
-   //             $("#page").paging({
-   //                 pageNo: num,//当前页数
-   //                 totalPage: parseInt(ret.page_total),//总页数
-   //                 totalSize: parseInt(ret.total),//总数
-   //                 callback: function(num) {
-   //                     ajaxTest(num);
-   //                 }
-   //             });
-   //         }
-   //     });
-   //  }
+    // ajaxTest(1);
+    //  function ajaxTest(num) {//num为当前第几页
+    //     $.ajax({
+    //         url:'',
+    //         type:'',
+    //         dataType:'',
+    //         success:function(ret){
+    //             $('.datatotal').html(ret.total);//总数
+    //             $('.datapage').html(num);//当前页数
+    //             $('.datapagetotal').html(ret.page_total);//总页数
+    //             //分页
+    //             $("#page").paging({
+    //                 pageNo: num,//当前页数
+    //                 totalPage: parseInt(ret.page_total),//总页数
+    //                 totalSize: parseInt(ret.total),//总数
+    //                 callback: function(num) {
+    //                     ajaxTest(num);
+    //                 }
+    //             });
+    //         }
+    //     });
+    //  }
+    /* 设置居中 */
+    var setting = $(".setting"), model_setting = $(".model-setting");
 
-    $(document).on('click','#update_data',function () {
+    /* 关闭设置 */
+    model_setting.on("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).css("display", "none");
+    });
+
+    /* 阻止冒泡 */
+    setting.on("click", function (e) {
+        e.stopPropagation();
+    });
+
+    /* 打开设置 */
+    $(".open_setting").on("click", function (e) {
+        model_setting.css("display", "block");
+        var setting_height = setting.height();
+        setting.css("margin-top", -(setting_height / 2));
+    });
+    /* 关闭设置 */
+    $(".close_setting").on("click",function(e) {
+        model_setting.css("display", "none");
+    })
+    /* 更新数据 */
+    $(".update_data").on("click", function (e) {
         $.get("{:url('index/index/import')}",'',function (res) {
             if (res =='success'){
                 alert('更新用户数据成功')
@@ -389,7 +426,47 @@
                 alert('更新数据失败')
             }
         })
-    })
+    });
+
+    /* 导出数据 */
+    $(".export_data").on("click", function (e) {
+        var att = $('.time>.selectstyle').attr('att');
+        var date=new Date();
+        var year=date.getFullYear();
+        var month=(date.getMonth()+1)<10?'0'+(date.getMonth()+1):(date.getMonth()+1);
+        var day=date.getDate()<10?'0'+date.getDate():date.getDate();
+        var today = year+'-'+month+'-'+day;
+        var time='';
+        if (att =='today'){
+            var time =today;
+        }
+        if (att =='yesterday'){
+            var day =date.getDate()<10?'0'+(date.getDate()-1):(date.getDate()-1)
+            var time = year+'-'+month+'-'+day;
+        }
+        if (att =='this_month') {
+            var time = year+'-'+month;
+        }
+        if (att =='last_month') {
+            var month=(date.getMonth())<10?'0'+(date.getMonth()):(date.getMonth());
+            var time = year+'-'+month;
+        }
+        var status = $('.status>.selectstyle').attr('att')
+        is_status='';
+        if(status =='normal'){
+            var is_status =1;
+        }
+        if(status =='abnormal'){
+            var is_status =2;
+        }
+        var user_name = $('#user_name').val();
+
+        window.location.href = '{:getenv("GET_USER_REDIRECT_URL")}'+"/admin/index/import_excel?time="+time+"&is_status="+is_status+"&user_name="+user_name
+//        $.get("{:url('admin/index/import_excel')}",data,function (res) {
+//
+//        },'json')
+    });
+
 </script>
 </body>
 </html>
