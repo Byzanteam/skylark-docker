@@ -6,6 +6,7 @@
     <title>考勤打卡</title>
     <link rel="stylesheet" href="/houtai/css/index.css">
     <link rel="stylesheet" href="/houtai/css/jedate.css">
+    <link rel="stylesheet" href="/houtai/css/pagination.css">
 </head>
 <body>
 <div class="header">
@@ -38,24 +39,26 @@
                     <input type="date" id="search_start_time" placeholder="开始时间">
                     &nbsp;至&nbsp;
                     <input type="date" id="search_end_time" placeholder="截止时间">
-                    <button type="button" class="search" id="search_time">搜索</button>
+                    <button type="button" class="search1" id="search_time">搜索</button>
                     <!--<button type="button" class="search" id="update_data">更新数据</button>-->
                 </div>
             </div>
             <div class="select_one">
                 <div>状态</div>
                 <div class="status">
-                    <span class="statusselect selectstyle" att="all">全部</span>
+                    <span class="statusselect selectstyle1" att="all">全部</span>
                     <span class="statusselect" att="normal">正常</span>
                     <span class="statusselect" att="abnormal">异常</span>
                 </div>
             </div>
             <div class="select_one">
                 <div>用户</div>
+
                 <div>
                     <input id="user_name" type="text" placeholder="输入用户名">
                     <button type="button" class="search">搜索</button>
                 </div>
+
             </div>
             <div class="select_two">
                 <ul class="operation_data">
@@ -99,7 +102,7 @@
             </div>
 
         </div>
-        <span id="page">{$results->render()}</span>
+        <div class="m-style M-box3"></div>
     </div>
     <div class="model-setting">
         <div class="setting">
@@ -123,7 +126,7 @@
             </div>
             <div class="footbtn">
                 <div val="1" id="queren">确定</div>
-                <div>取消</div>
+                <div class="close_setting">取消</div>
             </div>
         </div>
     </div>
@@ -132,13 +135,18 @@
 <script src="/houtai/js/jquery.min.js"></script>
 <script src="/houtai/js/jedate.js"></script>
 <script src="/houtai/js/paging.js"></script>
+<script src="/houtai/js/jquery.pagination.js"></script>
 <script>
+    var searchData = {page:1};
+    var preTotal = 0;
     $(function () {
         $('#is_working_day').click();
-    })
+        ajaxListData(searchData);
+    });
 
 
     var timevalue,statusvalue,typevalue;
+
     //    开始时间
     var starttime = jeDate("#start",{
 //        minDate:"01:02:08",              //最小日期
@@ -158,7 +166,7 @@
     //状态
     $('.status').on('click','.statusselect',function () {
         var index=$(this).index();
-        $('.statusselect').removeClass("selectstyle").eq(index).addClass("selectstyle");
+        $('.statusselect').removeClass("selectstyle1").eq(index).addClass("selectstyle1");
         statusvalue=index;
     });
     //工作时间设置
@@ -227,24 +235,21 @@
         if(status =='abnormal'){
             var is_status =2;
         }
+        var star_time = $('#search_start_time').val('')
+        var end_time = $('#search_end_time').val('');
         var user_name = $('#user_name').val();
-        var data ={
+        var data = searchData = {
             'time':time,
             'is_status':is_status,
-            'user_name':user_name
-        }
-        $.get("{:url('admin/index/search')}",data,function (res) {
-            var html =''
-            console.log(res);
-            $.each(res,function (i,v) {
-
-                html+='<tr><td>'+v.time_day+'</td<tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
-            });
-            $('tbody').html(html);
-        },'json')
+            'user_name':user_name,
+            'page':1
+        };
+        preTotal = 0;
+        ajaxListData(data);
     });
     $(document).on('click','.statusselect',function () {
         var status = $(this).attr('att');
+        var no_card = '';
         var is_status='';
         if(status =='normal'){
             var is_status =1;
@@ -261,39 +266,39 @@
         var today = year+'-'+month+'-'+day;
         var time='';
         if (att =='today'){
-            var time =today;
+            time =today;
         }
         if (att =='yesterday'){
-            var day =date.getDate()<10?'0'+(date.getDate()-1):(date.getDate()-1)
-            var time = year+'-'+month+'-'+day;
+            day =date.getDate()<10?'0'+(date.getDate()-1):(date.getDate()-1)
+            time = year+'-'+month+'-'+day;
         }
         if (att =='this_month') {
-            var time = year+'-'+month;
+            time = year+'-'+month;
         }
         if (att =='last_month') {
-            var month=(date.getMonth())<10?'0'+(date.getMonth()):(date.getMonth());
-            var time = year+'-'+month;
+            month=(date.getMonth())<10?'0'+(date.getMonth()):(date.getMonth());
+            time = year+'-'+month;
         }
         var user_name = $('#user_name').val();
-        var data ={
+        var star_time = $('#search_start_time').val()
+        var end_time = $('#search_end_time').val();
+        var data =searchData = {
             'time':time,
             'is_status':is_status,
-            'user_name':user_name
-        }
-        $.get("{:url('admin/index/search')}",data,function (res) {
-            var html ='';
-            $.each(res,function (i,v) {
-                html+='<tr><td>'+v.time_day+'</td<tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
-            })
-            $('tbody').html(html);
-        },'json')
+            'user_name':user_name,
+            'start_time':star_time,
+            'end_time':end_time,
+            'page':1
+        };
+        preTotal = 0;
+        ajaxListData(data);
 
     })
     //时间区间搜索
     $(document).on('click','#search_time',function () {
         var star_time = $('#search_start_time').val()
         var end_time = $('#search_end_time').val();
-
+        $('.timeselect').removeClass("selectstyle")
         var status = $('.status>.selectstyle').attr('att')
         is_status='';
         if(status =='normal'){
@@ -307,16 +312,12 @@
             'start_time':star_time,
             'end_time':end_time,
             'is_status':is_status,
-            'user_name':user_name
-        }
-        $.get("{:url('admin/index/search_time')}",data,function (res) {
-            var html =''
-            $.each(res,function (i,v) {
-                html+='<tr><td>'+v.time_day+'</td<tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
-            })
-            console.log()
-            $('tbody').html(html)
-        },'json')
+            'user_name':user_name,
+            'page':1
+        };
+        console.log(data);
+        preTotal = 0;
+        ajaxListData(data);
 
     })
     //用户名搜索
@@ -351,19 +352,47 @@
             var is_status =2;
         }
         var user_name = $('#user_name').val();
-        var data ={
+        var data = searchData = {
             'time':time,
             'is_status':is_status,
-            'user_name':user_name
-        }
+            'user_name':user_name,
+            'page':1
+        };
+        preTotal = 0;
+        ajaxListData(data);
+    });
+
+    function ajaxListData(data){
         $.get("{:url('admin/index/search')}",data,function (res) {
             var html =''
-            $.each(res,function (i,v) {
+            $.each(res.data,function (i,v) {
                 html+='<tr><td>'+v.time_day+'</td<tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
             })
+            if(res.total ==0){
+                $('.M-box3').hide();
+            }
+            if(preTotal != res.total){
+                $('.M-box3').show();
+                preTotal = res.total;
+                $('.M-box3').pagination({
+                    totalData: res.total,
+                    showData:10,
+                    isHide:true,
+                    coping: true,
+                    homePage: '首页',
+                    endPage: '末页',
+                    prevContent: '上页',
+                    nextContent: '下页',
+                    callback: function (api) {
+                        searchData.page = api.getCurrent();
+                        ajaxListData(searchData);
+                    }
+                });
+            }
             $('tbody').html(html)
         },'json')
-    })
+    }
+
     //    考勤类型选择
     $('.selecttype').click(function () {
         var index=$(this).index();
@@ -460,8 +489,9 @@
             var is_status =2;
         }
         var user_name = $('#user_name').val();
-
-        window.location.href = '{:getenv("GET_USER_REDIRECT_URL")}'+"/admin/index/import_excel?time="+time+"&is_status="+is_status+"&user_name="+user_name
+        var star_time = $('#search_start_time').val()
+        var end_time = $('#search_end_time').val();
+        window.location.href = '{:getenv("GET_USER_REDIRECT_URL")}'+"/admin/index/import_excel?time="+time+"&is_status="+is_status+"&user_name="+user_name+"&start_time="+star_time+"&end_time="+end_time
 //        $.get("{:url('admin/index/import_excel')}",data,function (res) {
 //
 //        },'json')

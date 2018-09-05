@@ -107,6 +107,7 @@ input {
     text-align: center;
     padding: 2px;
     margin-right: 20px;
+    cursor: pointer;
 }
 
 .search {
@@ -117,13 +118,26 @@ input {
     border-radius: 4px;
     margin-left: 12px;
     outline: none;
+    cursor: pointer;
 }
-
+.search1 {
+    background: #1e94ff;
+    border: none;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 4px;
+    margin-left: 12px;
+    outline: none;
+    cursor: pointer;
+}
 .selectstyle {
     border: solid 1px #1e94ff;
     color: #1e94ff;
 }
-
+.selectstyle1 {
+    border: solid 1px #1e94ff;
+    color: #1e94ff;
+}
 .static_list {
     padding: 0 20px 20px;
 }
@@ -245,12 +259,14 @@ input {
     padding: 8px 22px;
     display: inline-block;
     margin-right: 10px;
+    cursor: pointer;
 }
 
 .footbtn > div:nth-child(2) {
     border: solid 1px #363636;
     padding: 7px 22px;
     display: inline-block;
+    cursor: pointer;
 }
 
 .paging {
