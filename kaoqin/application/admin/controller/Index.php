@@ -475,8 +475,8 @@ class Index extends Controller {
     }
     //导出数据表
     public function excel($userinfo=[],$tableName,$xlsHeader=[]){
-        Loader::import(APP_PATH.'/PHPExcel.Classes.PHPExcel');
-        Loader::import(APP_PATH.'/PHPExcel.Classes.PHPExcel.IOFactory.PHPExcel_IOFactory');
+        Loader::import('PHPExcel.Classes.PHPExcel');
+        Loader::import('PHPExcel.Classes.PHPExcel.IOFactory.PHPExcel_IOFactory');
         /*$userinfo = [
             ['id' => 1, 'username' => 'zhangsan', 'email' => "zhangsan@itsource.cn"],
             ['id' => 2, 'username' => 'lisi', 'email' => "lisi@itsource.cn"],
