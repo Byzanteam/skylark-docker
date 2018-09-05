@@ -401,11 +401,15 @@
             var is_status =2;
         }
         var user_name = $('#user_name').val();
+        var star_time = $('#search_start_time').val();
+        var end_time = $('#search_end_time').val();
         var data = searchData = {
             'time':time,
             'is_status':is_status,
             'user_name':user_name,
             'page':1,
+            'start_time':star_time,
+            'end_time':end_time,
             'page_number':pageNumber
         };
         preTotal = 0;
