@@ -10,6 +10,7 @@ use think\Env;
 class Index extends Controller {
 
     public function to_work_push(){
+        //这里有改动
         $url = getenv('GER_URL').'/api/v4/pushes/wechat';//接收地址
         $date = date('Y-m-d',time());
         $openids = Db::table('users')->alias('u')->field('u.id u_id')->join('attendance a','u.id = a.user_id')->where('is_morning_status','<>',0)->where(['time_day'=>$date])->select();
@@ -59,6 +60,7 @@ class Index extends Controller {
                             ]
                         ]
                     ];
+                    //这里
                     $header = array('Authorization:'.getenv('INTERFACE_SIGNATURE'));//定义content-type为xml
                     $ch = curl_init(); //初始化curl
                     curl_setopt($ch, CURLOPT_URL, $url);//设置链接
