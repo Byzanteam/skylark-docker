@@ -10,6 +10,7 @@ use think\Env;
 class Index extends Controller {
 
     public function to_work_push(){
+        //这里有改动
         $url = getenv('GER_URL').'/api/v4/pushes/wechat';//接收地址
         $date = date('Y-m-d',time());
         $openids = Db::table('users')->alias('u')->field('u.id u_id')->join('attendance a','u.id = a.user_id')->where('is_morning_status','<>',0)->where(['time_day'=>$date])->select();
@@ -59,6 +60,7 @@ class Index extends Controller {
                             ]
                         ]
                     ];
+                    //这里
                     $header = array('Authorization:'.getenv('INTERFACE_SIGNATURE'));//定义content-type为xml
                     $ch = curl_init(); //初始化curl
                     curl_setopt($ch, CURLOPT_URL, $url);//设置链接
@@ -260,7 +262,7 @@ class Index extends Controller {
     }
     public function getOauth(){
         $code = $_GET['code'];
-        $url = Env::get('XD_URL').'/api/token';//接收地址
+        $url = getenv('XD_URL').'/api/token';//接收地址
 
 //        $header ["Content-type"]= "application/x-www-form-urlencoded";
         $ch = curl_init(); //初始化curl
@@ -268,7 +270,7 @@ class Index extends Controller {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);//设置是否返回信息
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));//设置HTTP头
         curl_setopt($ch, CURLOPT_POST, true);//设置为POST方式
-        curl_setopt($ch, CURLOPT_POSTFIELDS, 'grant_type=authorization_code&client_id='.Env::get('XD_CLIENT_ID').'&client_secret='.Env::get('XD_CLIENT_SECRET').'&code='.$code.'&redirect_uri='.Env::get('GET_USER_REDIRECT_URL').'/admin/index/getOauth');//POST数据
+        curl_setopt($ch, CURLOPT_POSTFIELDS, 'grant_type=authorization_code&client_id='.getenv('XD_CLIENT_ID').'&client_secret='.getenv('XD_CLIENT_SECRET').'&code='.$code.'&redirect_uri='.getenv('GET_USER_REDIRECT_URL').'/admin/index/getOauth');//POST数据
         $response = curl_exec($ch);//接收返回信息
         if(curl_errno($ch)){//出错则显示错误信息
             print curl_error($ch);
@@ -277,7 +279,7 @@ class Index extends Controller {
         $response = json_decode($response);
         $token = $response->access_token;
         //获取用户信息
-        $url =Env::get('XD_URL').'/api/userDetail?access_token='.$token;//接收地址
+        $url =getenv('XD_URL').'/api/userDetail?access_token='.$token;//接收地址
         $ch = curl_init(); //初始化curl
         curl_setopt($ch, CURLOPT_URL, $url);//设置链接
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);//设置是否返回信息
