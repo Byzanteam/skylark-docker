@@ -11,10 +11,10 @@
 <body>
 <div class="person_infor">
     <div class="person_left">
-        <div><img src="{:getenv('GER_URL').$users['headimgurl']}"></div>
+        <div><img src="{:substr($users['headimgurl'],0,4)=='http'?$users['headimgurl']:getenv('GER_URL').$users['headimgurl']}"></div>
         <div>
             <div id="user_id" user_id="{$users['id']}">{$users['name']}</div>
-            <div><span class="checkdate">2018-08-13</span>（星期<span class="week">四</span>）</div>
+            <div style="width: 130px"><span class="checkdate">2018-08-13</span>（星期<span class="week">四</span>）</div>
         </div>
     </div>
     <div class="person_right">
@@ -29,7 +29,7 @@
             <div class="left_text"><span>上</span></div>
             <div class="right_text">
                 <div class="ontitle">
-                    <span>上班打卡&emsp;09:00</span>
+                    <span>上班打卡&emsp;{$miscellaneous['to_work']}</span>
                 </div>
                 <!--已打卡-->
                 <div class="hasclock to_work_card" style="display: none">
@@ -47,7 +47,7 @@
             </div>
             <div class="right_text">
                 <div class="ontitle">
-                    <span>下班打卡&emsp;18:00</span>
+                    <span>下班打卡&emsp;{$miscellaneous['out_work']}</span>
                 </div>
                 <!--已打卡-->
                 <div class="hasclock out_work_card" style="display: none">

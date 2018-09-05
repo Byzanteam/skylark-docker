@@ -24,8 +24,11 @@ class Attendance extends Controller
         $date = date("Ymd",time());
         //dump($date);die;
         $url = "http://api.goseek.cn/Tools/holiday?date=".$date;
-        $holiday = file_get_contents($url);
+        $holiday = @file_get_contents($url);
         $holiday = json_decode($holiday,true);
+        if (!$holiday){
+            $holiday['data']=1;
+        }
         if($holiday['data'] == 1 || $holiday['data'] == 2){
             $miscellaneous = Db::table('miscellaneous')->where(['is_legal_holidays'=>2])->find();
         }else{
@@ -179,9 +182,11 @@ class Attendance extends Controller
         $time = date('Y-m',time());
         $users = Db::table('users')->where(['id'=>$user_id])->find();
         $results = Db::table('attendance')->where(['user_id'=>$user_id])->where('time_day','like','%'.$time.'%')->select();
+        $miscellaneous = Db::table('miscellaneous')->where(['is_legal_holidays'=>1])->find();
 //        var_dump($results);exit;
         $this->assign('results',$results);
         $this->assign('users',$users);
+        $this->assign('miscellaneous',$miscellaneous);
         return $this->fetch('index@index/static');
     }
 

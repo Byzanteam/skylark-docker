@@ -1,5 +1,7 @@
 <?php
 namespace jssdk;
+use think\Session;
+
 class JSSDK {
 
     private $appId;
@@ -31,19 +33,12 @@ class JSSDK {
         $signature = sha1($string);
 
         $signPackage = array(
-
             "appId"     => $this->appId,
-
             "nonceStr"  => $nonceStr,
-
             "timestamp" => $timestamp,
-
             "url"       => $url,
-
             "signature" => $signature,
-
             "rawString" => $string
-
         );
 
         return $signPackage;
@@ -67,11 +62,12 @@ class JSSDK {
     }
 
     private function getJsApiTicket() {
-
         // jsapi_ticket 应该全局存储与更新，以下代码以写入到文件中做示例
-
-
-
+        $ticket = Session::get('ticket');
+        $expired_at =Session::get('expired_at');
+        if (!empty($ticket)&&(time()<$expired_at)){
+            return $ticket;
+        }else{
             $url = getenv('GER_URL').'/api/v4/wechat_clients/jsapi_ticket';
             $options = array(
                 'http' => array(
@@ -86,9 +82,11 @@ class JSSDK {
             $results = json_decode($result,true);
 
             $ticket = $results['ticket'];
-
+            Session::set('ticket',$ticket);
+            $time = $results['expired_at']-1;
+            Session::set('expired_at',$time);
             return $ticket;
-
+        }
     }
 
 

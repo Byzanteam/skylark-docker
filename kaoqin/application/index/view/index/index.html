@@ -35,7 +35,7 @@
 
 <div class="header">
     <div class="header-content">
-        <div><img src="{$res['headimgurl']}"></div>
+        <div><img src="{:substr($res['headimgurl'],0,4)=='http'?$res['headimgurl']:getenv('GER_URL').$res['headimgurl']}"></div>
         <div>{$res['name']}</div>
         <div>成都市教育科学研究院附属学校</div>
         <div class="calendar">
