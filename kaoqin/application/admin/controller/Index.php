@@ -5,6 +5,7 @@ namespace app\admin\controller;
 //use function PHPSTORM_META\type;
 use think\Controller;
 use think\Db;
+use think\Loader;
 use think\Env;
 
 class Index extends Controller {
