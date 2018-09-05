@@ -460,10 +460,15 @@ class Index extends Controller {
 
         }
         $res =Db::table('attendance')->alias('a')->where('a.time_day','like','%'.$time.'%')->where('time_day','>',$start_time)->where('time_day','<=',$end_time)->where($where)->join('users u','a.user_id = u.id')->where('u.name','like','%'.$user_name.'%')->field('name,time_day,morning_time,morning_address,is_morning_status,afternoon_time,afternoon_address,is_afternoon_status')->select();
-
+        $results= [];
+        foreach ($res as $r){
+            $r['is_morning_status'] = $r['is_morning_status']==1?'正常':($r['is_morning_status']==2?'异常':'未打卡');
+            $r['is_afternoon_status'] = $r['is_morning_status']==1?'正常':($r['is_morning_status']==2?'异常':'未打卡');
+            $results []= $r;
+        }
         $table = ['用户名', '考勤时间', '上班时间','上班打卡地点' ,'上班打卡状态','下班时间', '下班打卡地点','下班打卡状态'];
         $tableName = '老师打卡情况表';
-        $this->excel($res,$tableName,$table);
+        $this->excel($results,$tableName,$table);
     }
     //导出数据表
     public function excel($userinfo=[],$tableName,$xlsHeader=[]){
