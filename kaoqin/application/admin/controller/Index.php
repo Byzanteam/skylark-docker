@@ -341,11 +341,13 @@ class Index extends Controller {
         $time='';
         $is_status='';
         $user_name='';
+        $page_number = '';
         $time = request()->get('time');
         $is_status = request()->get('is_status');
         $user_name = request()->get('user_name');
         $start_time = request()->get('start_time');
         $end_time = request()->get('end_time');
+        $page_number = request()->get('page_number')??20;
         $no_card = request()->get('no_card');
         if (empty($start_time)){
             $start_time=0;
@@ -361,8 +363,30 @@ class Index extends Controller {
         }elseif ($is_status==2){
             $where['a.is_morning_status']=2;
         }
-        $results = Db::table('attendance')->alias('a')->where('a.time_day','like','%'.$time.'%')->where('time_day','>=',$start_time)->where('time_day','<=',$end_time)->where($where)->join('users u','a.user_id = u.id')->where('u.name','like','%'.$user_name.'%')->paginate(10);
+        $results = Db::table('attendance')->alias('a')->where('a.time_day','like','%'.$time.'%')->where('time_day','>=',$start_time)->where('time_day','<=',$end_time)->where($where)->join('users u','a.user_id = u.id')->where('u.name','like','%'.$user_name.'%')->paginate($page_number);
+//        var_dump($results);
+        $date = date("Ymd",time());
+        $url = "http://api.goseek.cn/Tools/holiday?date=".$date;
+        $holiday = @file_get_contents($url);
+        $holiday = json_decode($holiday,true);
+        if (!$holiday){
+            $holiday['data']=1;
+        }
+        if($holiday['data'] == 1 || $holiday['data'] == 2){
+            $miscellaneous = Db::table('miscellaneous')->where(['is_legal_holidays'=>2])->find();
+        }else{
+            $miscellaneous = Db::table('miscellaneous')->where(['is_legal_holidays'=>1])->find();
+        }
+//            var_dump($miscellaneous);exit;
 
+        foreach ($results as $key=>$result){
+            if (date('H:i:s',time())<=$miscellaneous['to_work']&&empty($result['to_work'])&&$result['time_day']==date('Y-m-d',time())){
+                $result['is_morning_status']=1;
+            }elseif (date('H:i:s',time())<=$miscellaneous['out_work']&&empty($result['out_work'])&&$result['time_day']==date('Y-m-d',time())){
+                $result['is_afternoon_status']=1;
+            }
+            $results[$key] = $result;
+        }
         return $results;
     }
 
@@ -412,7 +436,6 @@ class Index extends Controller {
             return $result_time;
         }
     }
-
     public function import_excel(){
         $time='';
         $is_status='';
@@ -442,7 +465,6 @@ class Index extends Controller {
         $tableName = '老师打卡情况表';
         $this->excel($res,$tableName,$table);
     }
-
     //导出数据表
     public function excel($userinfo=[],$tableName,$xlsHeader=[]){
         Loader::import('/PHPExcel.Classes.PHPExcel');

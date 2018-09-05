@@ -17,7 +17,7 @@
     <div class="header_right">
         <!--<img src="/houtai/images/setting.png">-->
         <!--<span>更新数据</span>-->
-        <span class="open_setting">考勤时间设置</span>
+        <span class="open_setting">设置</span>
         <img style="width: 20px;padding-left: 20px" src="/houtai/images/head.png">
         <span>{$users['principal']}</span>
     </div>
@@ -51,16 +51,13 @@
                     <span class="statusselect" att="abnormal">异常</span>
                 </div>
             </div>
-            <div class="select_one">
+            <div class="select_one" style="position: relative;">
                 <div>用户</div>
 
                 <div>
                     <input id="user_name" type="text" placeholder="输入用户名">
                     <button type="button" class="search">搜索</button>
                 </div>
-
-            </div>
-            <div class="select_two">
                 <ul class="operation_data">
                     <li class="update_data">更新数据</li>
                     <li class="export_data">导出数据</li>
@@ -73,6 +70,7 @@
                 <table>
                     <thead>
                     <tr>
+                        <td>序号</td>
                         <td>时间</td>
                         <td>用户</td>
                         <td>上班时间</td>
@@ -81,15 +79,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <?php foreach($results as $result):?>
-                    <tr>
-                        <td>{$result.time_day}</td>
-                        <td>{$result.name}</td>
-                        <td><span class="{$result.is_morning_status==1?'':'special'}">{$result.is_morning_status==0?'未打卡':$result.morning_time}</span></td>
-                        <td><span class="{$result.is_afternoon_status==1?'':'special'}">{$result.is_afternoon_status==0?'未打卡':$result.afternoon_time}</span></td>
-                        <td><span class="{$result.is_morning_status==1&&$result.is_afternoon_status==1?'':'abnormal'}">{$result.is_morning_status==1&&$result.is_afternoon_status==1?'正常':'异常'}</span></td>
-                    </tr>
-                    <?php endforeach?>
+
                     </tbody>
                 </table>
             </div>
@@ -102,7 +92,17 @@
             </div>
 
         </div>
-        <div class="m-style M-box3"></div>
+        <div class="m-style">
+            <div class="M-box3"></div>
+            <span style="color:#bdbdbd;width: auto;">每页展示条数</span>
+            <select name="#" id="pageNumber" class="pageNumber">
+                <option value="10">10条</option>
+                <option value="20" selected>20条</option>
+                <option value="30">30条</option>
+                <option value="40">40条</option>
+                <option value="50">50条</option>
+            </select>
+        </div>
     </div>
     <div class="model-setting">
         <div class="setting">
@@ -238,11 +238,13 @@
         var star_time = $('#search_start_time').val('')
         var end_time = $('#search_end_time').val('');
         var user_name = $('#user_name').val();
+        var pageNumber = $("#pageNumber").val();
         var data = searchData = {
             'time':time,
             'is_status':is_status,
             'user_name':user_name,
-            'page':1
+            'page':1,
+            'page_number':pageNumber
         };
         preTotal = 0;
         ajaxListData(data);
@@ -280,15 +282,17 @@
             time = year+'-'+month;
         }
         var user_name = $('#user_name').val();
-        var star_time = $('#search_start_time').val()
+        var star_time = $('#search_start_time').val();
         var end_time = $('#search_end_time').val();
+        var pageNumber = $("#pageNumber").val();
         var data =searchData = {
             'time':time,
             'is_status':is_status,
             'user_name':user_name,
             'start_time':star_time,
             'end_time':end_time,
-            'page':1
+            'page':1,
+            'page_number':pageNumber
         };
         preTotal = 0;
         ajaxListData(data);
@@ -308,12 +312,14 @@
             var is_status =2;
         }
         var user_name = $('#user_name').val();
+        var pageNumber = $("#pageNumber").val();
         var data ={
             'start_time':star_time,
             'end_time':end_time,
             'is_status':is_status,
             'user_name':user_name,
-            'page':1
+            'page':1,
+            'page_number':pageNumber
         };
         console.log(data);
         preTotal = 0;
@@ -352,21 +358,67 @@
             var is_status =2;
         }
         var user_name = $('#user_name').val();
+        var pageNumber = $("#pageNumber").val();
         var data = searchData = {
             'time':time,
             'is_status':is_status,
             'user_name':user_name,
-            'page':1
+            'page':1,
+            'page_number':pageNumber
         };
         preTotal = 0;
         ajaxListData(data);
     });
-
+    $('#pageNumber').on('change',function () {
+        var pageNumber = $(this).val();
+        var att = $('.time>.selectstyle').attr('att');
+        var date=new Date();
+        var year=date.getFullYear();
+        var month=(date.getMonth()+1)<10?'0'+(date.getMonth()+1):(date.getMonth()+1);
+        var day=date.getDate()<10?'0'+date.getDate():date.getDate();
+        var today = year+'-'+month+'-'+day;
+        var time='';
+        if (att =='today'){
+            var time =today;
+        }
+        if (att =='yesterday'){
+            var day =date.getDate()<10?'0'+(date.getDate()-1):(date.getDate()-1)
+            var time = year+'-'+month+'-'+day;
+        }
+        if (att =='this_month') {
+            var time = year+'-'+month;
+        }
+        if (att =='last_month') {
+            var month=(date.getMonth())<10?'0'+(date.getMonth()):(date.getMonth());
+            var time = year+'-'+month;
+        }
+        var status = $('.status>.selectstyle').attr('att')
+        is_status='';
+        if(status =='normal'){
+            var is_status =1;
+        }
+        if(status =='abnormal'){
+            var is_status =2;
+        }
+        var user_name = $('#user_name').val();
+        var data = searchData = {
+            'time':time,
+            'is_status':is_status,
+            'user_name':user_name,
+            'page':1,
+            'page_number':pageNumber
+        };
+        preTotal = 0;
+        ajaxListData(data)
+    })
     function ajaxListData(data){
         $.get("{:url('admin/index/search')}",data,function (res) {
-            var html =''
+            var html ='',number = 0;
+            if (data.page>1){
+                number = (data.page -1)*res.per_page;
+            }
             $.each(res.data,function (i,v) {
-                html+='<tr><td>'+v.time_day+'</td<tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
+                html+='<tr><td>'+parseInt((i+1)+number)+'</td><td>'+v.time_day+'</td<tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":v.morning_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":v.afternoon_time)+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
             })
             if(res.total ==0){
                 $('.M-box3').hide();
@@ -376,7 +428,7 @@
                 preTotal = res.total;
                 $('.M-box3').pagination({
                     totalData: res.total,
-                    showData:10,
+                    showData:res.per_page,
                     isHide:true,
                     coping: true,
                     homePage: '首页',
