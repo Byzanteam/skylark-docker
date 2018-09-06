@@ -422,7 +422,7 @@
                 number = (data.page -1)*res.per_page;
             }
             $.each(res.data,function (i,v) {
-                html+='<tr><td>'+parseInt((i+1)+number)+'</td><td>'+v.time_day+'</td<tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":(v.morning_time==""?"待打卡":v.morning_time))+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":(v.afternoon_time==""?"待打卡":v.afternoon_time))+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
+                html+='<tr><td>'+parseInt((i+1)+number)+'</td><td>'+v.time_day+'</td<tr><td>'+v.name+'</td><td><span class="'+(v.is_morning_status==1?"":"special")+'">'+(v.is_morning_status==0?"未打卡":(v.morning_time==null?"待打卡":v.morning_time))+'</span></td><td><span class="'+(v.is_afternoon_status==1?"":"special")+'">'+(v.is_afternoon_status==0?"未打卡":(v.afternoon_time==null?"待打卡":v.afternoon_time))+'</span></td><td><span class="'+(v.is_afternoon_status==1&&v.is_morning_status==1?"":"abnormal")+'">'+(v.is_afternoon_status==1&&v.is_morning_status==1?"正常":"异常")+'</span></td></tr>'
             })
             if(res.total ==0){
                 $('.M-box3').hide();
