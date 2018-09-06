@@ -400,17 +400,32 @@ class Index extends Controller {
             }
 
         }elseif ($is_status==2){
-            $results = Db::table('attendance')
-                ->alias('a')
-                ->where('a.time_day','like','%'.$time.'%')
-                ->where('time_day','>=',$start_time)
-                ->where('time_day','<=',$end_time)
-                ->where(function ($query){
-                    $query->where('a.is_morning_status|a.is_afternoon_status','<>',1);
-                })
-                ->join('users u','a.user_id = u.id')
-                ->where('u.name','like','%'.$user_name.'%')
-                ->paginate($page_number);
+            if($time ==date('Y-m-d',time())&&date('H:i:s',time())<=$miscellaneous['out_work']){
+                $results = Db::table('attendance')
+                    ->alias('a')
+                    ->where('a.time_day','like','%'.$time.'%')
+                    ->where('time_day','>=',$start_time)
+                    ->where('time_day','<=',$end_time)
+                    ->where(function ($query){
+                        $query->where('a.is_morning_status|a.is_afternoon_status','in',[2,3]);
+                    })
+                    ->join('users u','a.user_id = u.id')
+                    ->where('u.name','like','%'.$user_name.'%')
+                    ->paginate($page_number);
+            }else{
+                $results = Db::table('attendance')
+                    ->alias('a')
+                    ->where('a.time_day','like','%'.$time.'%')
+                    ->where('time_day','>=',$start_time)
+                    ->where('time_day','<=',$end_time)
+                    ->where(function ($query){
+                        $query->where('a.is_morning_status|a.is_afternoon_status','<>',1);
+                    })
+                    ->join('users u','a.user_id = u.id')
+                    ->where('u.name','like','%'.$user_name.'%')
+                    ->paginate($page_number);
+            }
+
         }
 //        $results = Db::table('attendance')->alias('a')->where('a.time_day','like','%'.$time.'%')->where('time_day','>=',$start_time)->where('time_day','<=',$end_time)->where($where)->join('users u','a.user_id = u.id')->where('u.name','like','%'.$user_name.'%')->paginate($page_number);
 //        var_dump($results);
@@ -501,7 +516,7 @@ class Index extends Controller {
         $results= [];
         foreach ($res as $r){
             $r['is_morning_status'] = $r['is_morning_status']==1?'正常':($r['is_morning_status']==2?'异常':'未打卡');
-            $r['is_afternoon_status'] = $r['is_morning_status']==1?'正常':($r['is_morning_status']==2?'异常':'未打卡');
+            $r['is_afternoon_status'] = $r['is_afternoon_status']==1?'正常':($r['is_afternoon_status']==2?'异常':'未打卡');
             $results []= $r;
         }
         $table = ['用户名', '考勤时间', '上班时间','上班打卡地点' ,'上班打卡状态','下班时间', '下班打卡地点','下班打卡状态'];
