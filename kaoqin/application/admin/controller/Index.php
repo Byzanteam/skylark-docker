@@ -358,21 +358,47 @@ class Index extends Controller {
         if (empty($end_time)){
             $end_time = date('Y-m-d'.time());
         }
-
+        $date = date("Ymd",time());
+        $url = "http://api.goseek.cn/Tools/holiday?date=".$date;
+        $holiday = @file_get_contents($url);
+        $holiday = json_decode($holiday,true);
+        if (!$holiday){
+            $holiday['data']=1;
+        }
+        if($holiday['data'] == 1 || $holiday['data'] == 2){
+            $miscellaneous = Db::table('miscellaneous')->where(['is_legal_holidays'=>2])->find();
+        }else{
+            $miscellaneous = Db::table('miscellaneous')->where(['is_legal_holidays'=>1])->find();
+        }
         $where = [];
         $results = Db::table('attendance')->alias('a')->where('a.time_day','like','%'.$time.'%')->where('time_day','>=',$start_time)->where('time_day','<=',$end_time)->where($where)->join('users u','a.user_id = u.id')->where('u.name','like','%'.$user_name.'%')->paginate($page_number);
         if ($is_status ==1){
-            $where['a.is_morning_status']=1;
-            $where['a.is_afternoon_status']=1;
-            $results = Db::table('attendance')
-                ->alias('a')
-                ->where('a.time_day','like','%'.$time.'%')
-                ->where('time_day','>=',$start_time)
-                ->where('time_day','<=',$end_time)
-                ->where($where)
-                ->join('users u','a.user_id = u.id')
-                ->where('u.name','like','%'.$user_name.'%')
-                ->paginate($page_number);
+            if ($time ==date('Y-m-d',time())&&date('H:i:s',time())<=$miscellaneous['out_work']){
+                $where['a.is_morning_status']=1;
+                $where['a.is_afternoon_status']=0;
+                $results = Db::table('attendance')
+                    ->alias('a')
+                    ->where('a.time_day','like','%'.$time.'%')
+                    ->where('time_day','>=',$start_time)
+                    ->where('time_day','<=',$end_time)
+                    ->where($where)
+                    ->join('users u','a.user_id = u.id')
+                    ->where('u.name','like','%'.$user_name.'%')
+                    ->paginate($page_number);
+            }else{
+                $where['a.is_morning_status']=1;
+                $where['a.is_afternoon_status']=1;
+                $results = Db::table('attendance')
+                    ->alias('a')
+                    ->where('a.time_day','like','%'.$time.'%')
+                    ->where('time_day','>=',$start_time)
+                    ->where('time_day','<=',$end_time)
+                    ->where($where)
+                    ->join('users u','a.user_id = u.id')
+                    ->where('u.name','like','%'.$user_name.'%')
+                    ->paginate($page_number);
+            }
+
         }elseif ($is_status==2){
             $results = Db::table('attendance')
                 ->alias('a')
@@ -388,18 +414,7 @@ class Index extends Controller {
         }
 //        $results = Db::table('attendance')->alias('a')->where('a.time_day','like','%'.$time.'%')->where('time_day','>=',$start_time)->where('time_day','<=',$end_time)->where($where)->join('users u','a.user_id = u.id')->where('u.name','like','%'.$user_name.'%')->paginate($page_number);
 //        var_dump($results);
-        $date = date("Ymd",time());
-        $url = "http://api.goseek.cn/Tools/holiday?date=".$date;
-        $holiday = @file_get_contents($url);
-        $holiday = json_decode($holiday,true);
-        if (!$holiday){
-            $holiday['data']=1;
-        }
-        if($holiday['data'] == 1 || $holiday['data'] == 2){
-            $miscellaneous = Db::table('miscellaneous')->where(['is_legal_holidays'=>2])->find();
-        }else{
-            $miscellaneous = Db::table('miscellaneous')->where(['is_legal_holidays'=>1])->find();
-        }
+
 //            var_dump($miscellaneous);exit;
 
         foreach ($results as $key=>$result){
