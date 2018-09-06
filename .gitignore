@@ -1,6 +1,5 @@
 data/
 log/
-shared/
 tmp/
 etc/ssl/
 etc/nginx/skylark/custom.conf
