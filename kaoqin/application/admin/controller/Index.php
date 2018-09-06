@@ -360,13 +360,33 @@ class Index extends Controller {
         }
 
         $where = [];
+        $results = Db::table('attendance')->alias('a')->where('a.time_day','like','%'.$time.'%')->where('time_day','>=',$start_time)->where('time_day','<=',$end_time)->where($where)->join('users u','a.user_id = u.id')->where('u.name','like','%'.$user_name.'%')->paginate($page_number);
         if ($is_status ==1){
             $where['a.is_morning_status']=1;
             $where['a.is_afternoon_status']=1;
+            $results = Db::table('attendance')
+                ->alias('a')
+                ->where('a.time_day','like','%'.$time.'%')
+                ->where('time_day','>=',$start_time)
+                ->where('time_day','<=',$end_time)
+                ->where($where)
+                ->join('users u','a.user_id = u.id')
+                ->where('u.name','like','%'.$user_name.'%')
+                ->paginate($page_number);
         }elseif ($is_status==2){
-            $where['a.is_morning_status']=2;
+            $results = Db::table('attendance')
+                ->alias('a')
+                ->where('a.time_day','like','%'.$time.'%')
+                ->where('time_day','>=',$start_time)
+                ->where('time_day','<=',$end_time)
+                ->where(function ($query){
+                    $query->where('a.is_morning_status|a.is_afternoon_status','<>',1);
+                })
+                ->join('users u','a.user_id = u.id')
+                ->where('u.name','like','%'.$user_name.'%')
+                ->paginate($page_number);
         }
-        $results = Db::table('attendance')->alias('a')->where('a.time_day','like','%'.$time.'%')->where('time_day','>=',$start_time)->where('time_day','<=',$end_time)->where($where)->join('users u','a.user_id = u.id')->where('u.name','like','%'.$user_name.'%')->paginate($page_number);
+//        $results = Db::table('attendance')->alias('a')->where('a.time_day','like','%'.$time.'%')->where('time_day','>=',$start_time)->where('time_day','<=',$end_time)->where($where)->join('users u','a.user_id = u.id')->where('u.name','like','%'.$user_name.'%')->paginate($page_number);
 //        var_dump($results);
         $date = date("Ymd",time());
         $url = "http://api.goseek.cn/Tools/holiday?date=".$date;
@@ -475,8 +495,8 @@ class Index extends Controller {
     }
     //导出数据表
     public function excel($userinfo=[],$tableName,$xlsHeader=[]){
-        Loader::import(APP_PATH.'/PHPExcel.Classes.PHPExcel');
-        Loader::import(APP_PATH.'/PHPExcel.Classes.PHPExcel.IOFactory.PHPExcel_IOFactory');
+        Loader::import('PHPExcel.Classes.PHPExcel');
+        Loader::import('PHPExcel.Classes.PHPExcel.IOFactory.PHPExcel_IOFactory');
         /*$userinfo = [
             ['id' => 1, 'username' => 'zhangsan', 'email' => "zhangsan@itsource.cn"],
             ['id' => 2, 'username' => 'lisi', 'email' => "lisi@itsource.cn"],
