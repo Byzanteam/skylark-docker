@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -eux
 
+# https://docs.docker.com/install/linux/linux-postinstall/#configure-docker-to-start-on-boot
+sudo systemctl enable docker
+
 touch app.local.env
 docker-compose build
 docker-compose run app bundle exec rails db:create

@@ -11,6 +11,7 @@ services:
       - ./etc/postgresql/postgresql.conf:/etc/postgresql/postgresql.conf
     expose:
       - '5432'
+    restart: on-failure:1
 
   redis:
     container_name: 'slp_redis'
@@ -19,21 +20,27 @@ services:
       - ./data/redis:/data
     expose:
       - '6379'
+    restart: on-failure:1
 
   memcached:
     container_name: 'slp_memcached'
     image: memcached:1.5.1-alpine
     expose:
       - '11211'
+    restart: on-failure:1
 
   elasticsearch:
     container_name: 'slp_elasticsearch'
     image: fahchen/elasticsearch-analysis-ik:5.6.3-alpine
+    env_file:
+      - app.default.env
+      - app.local.env
     volumes:
       - ./data/elasticsearch:/usr/share/elasticsearch/data
     expose:
       - '9200'
       - '9300'
+    restart: on-failure:1
 
   web:
     container_name: 'slp_web'
@@ -65,6 +72,7 @@ services:
     ports:
       - '80:80'
       - '443:443'
+    restart: on-failure:1
 
   app: &app_base
     image: registry.cn-hangzhou.aliyuncs.com/skylark/production:$SLP_VERSION
@@ -96,6 +104,7 @@ services:
     command: bundle exec puma -C config/puma.rb
     expose:
       - '3000'
+    restart: on-failure:1
 
   sidekiq:
     <<: *app_base
