@@ -236,7 +236,7 @@ class Index extends Controller {
                                     'color'=>'#173177'
                                 ],
                                 'remark'=>[
-                                    'value'=>'下班时间为:'.$miscellaneous['to_work'].',请别忘记打卡哟',
+                                    'value'=>'下班时间为:'.$miscellaneous['out_work'].',请别忘记打卡哟',
                                     'color'=>'#173177'
                                 ]
 
