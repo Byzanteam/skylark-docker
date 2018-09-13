@@ -523,6 +523,19 @@ class Index extends Controller {
         $tableName = '老师打卡情况表';
         $this->excel($results,$tableName,$table);
     }
+
+    //更新待打卡人员数据
+    public function get_no_card(){
+        $users = Db::table('users')->field('id')->select();
+        $user_info = [];
+        $user_des = [];
+        foreach ($users as $user){
+            $user_des['time_day'] = date('Y-m-d',time());
+            $user_des['user_id'] = $user['id'];
+            $user_info[] = $user_des;
+        }
+        Db::table('attendance')->insertAll($user_info);
+    }
     //导出数据表
     public function excel($userinfo=[],$tableName,$xlsHeader=[]){
         Loader::import('PHPExcel.PHPExcel.Classes.PHPExcel',EXTEND_PATH);
