@@ -306,7 +306,7 @@ class Index extends Controller {
             $this->assign('users',$users);
             return $this->fetch();
         }else{
-            return $this->redirect('http://117.48.200.115:8080');
+            return $this->redirect(getenv('XD_URL'));
         }
 
     }
