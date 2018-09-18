@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 //use function PHPSTORM_META\type;
 use think\Controller;
+use think\Cookie;
 use think\Db;
 use think\Loader;
 use think\Env;
@@ -293,17 +294,19 @@ class Index extends Controller {
         }
         curl_close($ch); //关闭curl链接
 
-
-        return $this->redirect('index/index',['users'=>$response1]);
+        Cookie::set('users',$response1);
+        return $this->redirect('index/index');
     }
     public function index(){
-        $users = input('param.users');
+        $users = Cookie::get('users');
         if ($users){
             $results = Db::table('attendance')->alias('a')->join('users u','a.user_id = u.id')->paginate(10);
             $users = json_decode($users,true);
             $this->assign('results',$results);
             $this->assign('users',$users);
             return $this->fetch();
+        }else{
+            return $this->redirect('http://117.48.200.115:8080');
         }
 
     }
