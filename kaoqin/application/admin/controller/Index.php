@@ -588,7 +588,7 @@ class Index extends Controller {
          */
         foreach ($userinfo as $k => $v) {
             //获取当前多少行
-            $line = 3 + $k;
+            $line = 2 + $k;
             $i = 0;
             foreach ($v as $key => $value) {
                 $objPHPExcel->getActiveSheet()->setCellValue($cellName[$i] . $line, $value);
