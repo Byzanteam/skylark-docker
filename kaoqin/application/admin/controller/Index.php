@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 //use function PHPSTORM_META\type;
 use think\Controller;
+use think\Cookie;
 use think\Db;
 use think\Loader;
 use think\Env;
@@ -293,17 +294,19 @@ class Index extends Controller {
         }
         curl_close($ch); //关闭curl链接
 
-
-        return $this->redirect('index/index',['users'=>$response1]);
+        Cookie::set('users',$response1);
+        return $this->redirect('index/index');
     }
     public function index(){
-        $users = input('param.users');
+        $users = Cookie::get('users');
         if ($users){
             $results = Db::table('attendance')->alias('a')->join('users u','a.user_id = u.id')->paginate(10);
             $users = json_decode($users,true);
             $this->assign('results',$results);
             $this->assign('users',$users);
             return $this->fetch();
+        }else{
+            return $this->redirect(getenv('XD_URL'));
         }
 
     }
@@ -520,7 +523,12 @@ class Index extends Controller {
             $results []= $r;
         }
         $table = ['用户名', '考勤时间', '上班时间','上班打卡地点' ,'上班打卡状态','下班时间', '下班打卡地点','下班打卡状态'];
-        $tableName = '老师打卡情况表';
+        if (!empty($time)){
+            $tableName = '老师打卡情况表'.$time;
+        }else{
+            $tableName = '老师打卡情况表'.$start_time.'-'.$end_time;
+        }
+
         $this->excel($results,$tableName,$table);
     }
 
@@ -567,21 +575,12 @@ class Index extends Controller {
          */
         $cellName = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AV', 'AW', 'AX', 'AY', 'AZ'];
 
-        /**
-         * 将表格第一行作为表格的简介行，需要合并
-         */
-//>>1.获取需要合并多少列
-        $column_count = count($xlsHeader);
-//>>2.合并第一行的三列
-        $objPHPExcel->getActiveSheet()->mergeCells("A1:" . $cellName[$column_count - 1] . "1");
-//>>3.设置合并后的内容
-        $objPHPExcel->getActiveSheet()->setCellValue("A1", "用户信息统计  创建时间：" . date("Y-m-d"));
 
         /**
          * 表格第二行开始设置表头
          */
         foreach ($xlsHeader as $k => $v) {
-            $objPHPExcel->getActiveSheet()->setCellValue($cellName[$k] . "2", $v);
+            $objPHPExcel->getActiveSheet()->setCellValue($cellName[$k] . "1", $v);
         }
 
         /**
