@@ -160,6 +160,7 @@
 <script type="text/javascript">
     var geo_distance,geo_lat,geo_lng,geo_coder;
     var MainGeo = new qq.maps.LatLng(30.541780,104.040480);
+    let max_distance = 500;
     wx.config({
 //        debug:true,
         appId: "{$signPackage.appId}",
@@ -195,11 +196,11 @@
                         var longitudeNew = json.longitudeNew;
                         if (json.status==0){
                             let geo_distance_cn = geo_distance > 500 ? '(外勤)':'';
-                            let geo_distance_up_time_cn = geo_distance > 500 ? '外勤打卡':'上班时间';
-                            let geo_distance_down_time_cn = geo_distance > 500 ? '外勤打卡':'下班时间';
+                            let geo_distance_up_time_cn = geo_distance > max_distance ? '外勤打卡':'上班时间';
+                            let geo_distance_down_time_cn = geo_distance > max_distance ? '外勤打卡':'下班时间';
                             $('.up_time_cn').html(geo_distance_up_time_cn);
                             $('.down_time_cn').html(geo_distance_down_time_cn);
-                            if(geo_distance > 500){
+                            if(geo_distance > max_distance){
                                 $('.onclock').css({
                                     background:'#FFA52F',
                                     boxShadow:'0 0 0.5rem 0 rgb(255, 165, 47)'
@@ -269,7 +270,7 @@
         var morning_time = '{:time()}';
         var play_card_time = '{:date("H:i:s",time())}';
 //        console.log(morning_remarks);
-        if (morning_time>workTime || geo_distance > 500){
+        if (morning_time>workTime || geo_distance > max_distance){
 //            var is_morning_status = 2;
             $('.box').show();
             $('.remark').show();
@@ -347,7 +348,7 @@
         var play_card_time = '{:date("H:i:s",time())}';
 
 //        console.log(morning_remarks);
-        if (morning_time<workTime || geo_distance > 500){
+        if (morning_time<workTime || geo_distance > max_distance){
 //            alert(position);
 //            var is_morning_status = 2;
             $('.remark').show();
