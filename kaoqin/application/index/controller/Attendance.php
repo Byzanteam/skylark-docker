@@ -43,6 +43,7 @@ class Attendance extends Controller
             if ($res1){
                 $res1['u_id'] = $res1['id'];
                 $this->assign('res',$res1);
+                $this->assign('MAX_DISTANCE',getenv('MAX_DISTANCE'));
                 $this->assign('miscellaneous',$miscellaneous);
                 $this->assign('signPackage',$signPackage);
                 return $this->fetch('index');
