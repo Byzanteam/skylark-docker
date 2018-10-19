@@ -34,7 +34,6 @@ class Attendance extends Controller
         }else{
             $miscellaneous = Db::table('miscellaneous')->where(['is_legal_holidays'=>1])->find();
         }
-
         if ($res) {
             $this->assign('res',$res);
             $this->assign('miscellaneous',$miscellaneous);
@@ -66,6 +65,13 @@ class Attendance extends Controller
         $data['time_day'] = request()->post('time_day');
         $data['is_morning_status'] = request()->post('is_morning_status');
         $data['morning_remarks'] = request()->post('morning_remarks');
+
+
+        $geo_distance = request()->post('geo_distance');
+        $data['distance_number_morning'] = intval($geo_distance);
+        $data['is_beyond_morning'] = $geo_distance > 500 ? 1 : 0;
+        $data['geo_lat_morning'] = request()->post('geo_lat');
+        $data['geo_lng_morning'] = request()->post('geo_lng');
 
         $day = date('Y-m-d');
         $res = Db::table('attendance')->where(['user_id'=>$user_id,'time_day'=>$day])->find();
@@ -123,6 +129,12 @@ class Attendance extends Controller
         $data['time_day'] = request()->post('time_day');
         $data['is_afternoon_status'] = request()->post('is_afternoon_status');
         $data['afternoon_remarks'] = request()->post('afternoon_remarks');
+
+        $geo_distance = request()->post('geo_distance');
+        $data['distance_number_afternoon'] = intval($geo_distance);
+        $data['is_beyond_afternoon'] = $geo_distance > 500 ? 1 : 0;
+        $data['geo_lat_afternoon'] = request()->post('geo_lat');
+        $data['geo_lng_afternoon'] = request()->post('geo_lng');
 
         $day = date('Y-m-d');
         $res = Db::table('attendance')->where(['user_id'=>$user_id,'time_day'=>$day])->find();

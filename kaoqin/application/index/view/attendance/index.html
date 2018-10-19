@@ -57,7 +57,7 @@
                 <div style="{:isset($res['morning_time'])&&!empty($res['morning_time'])?'display:none':''}">
                     <div position="" id="position_to_work" class="onclock {:time()>strtotime($miscellaneous['to_work'])?'yellow':''}">
                         <div>
-                            <div>上班时间</div>
+                            <div class="up_time_cn">上班时间</div>
                             <div class="nowtime">08:46:31</div>
                         </div>
                     </div>
@@ -87,7 +87,7 @@
                 <div  style="{:isset($res['afternoon_time'])&&!empty($res['afternoon_time'])?'display:none':''}">
                     <div position="" id="position_out_work" class="onclock">
                         <div>
-                            <div>下班时间</div>
+                            <div class="down_time_cn">下班时间</div>
                             <div class="nowtime">18:46:31</div>
                         </div>
                         <!--<img src="/static/images/loading.png" class="rotate">-->
@@ -155,8 +155,11 @@
 <script src="/static/js/rem.js"></script>
 <script src="/static/js/jquery.min.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&libraries=geometry"></script>
 <!--定位-->
 <script type="text/javascript">
+    var geo_distance,geo_lat,geo_lng,geo_coder;
+    var MainGeo = new qq.maps.LatLng(30.541780,104.040480);
     wx.config({
 //        debug:true,
         appId: "{$signPackage.appId}",
@@ -168,6 +171,7 @@
             'onMenuShareTimeline',
             'onMenuShareAppMessage',
             'onMenuShareQQ',
+            'getLocation',
             'onMenuShareWeibo'
         ]
 
@@ -177,9 +181,10 @@
     wx.ready(function () {
         wx.getLocation({
             success: function (res) {
-//                alert(JSON.stringify(res));
-                var latitude = res.latitude; //纬度
-                var longitude = res.longitude; //经度
+                var latitude = geo_lat = res.latitude; //纬度
+                var longitude = geo_lng = res.longitude; //经度
+                geo_coder = new qq.maps.LatLng(geo_lat,geo_lng);
+                geo_distance = qq.maps.geometry.spherical.computeDistanceBetween(MainGeo, geo_coder);
                 $.ajax({
                     url: "{:url('index/index/tencent')}",
                     type: "POST",
@@ -189,11 +194,23 @@
                         var latitudeNew = json.latitudeNew;
                         var longitudeNew = json.longitudeNew;
                         if (json.status==0){
-                            $('.position_card').html(json.address)
+                            let geo_distance_cn = geo_distance > 500 ? '(外勤)':'';
+                            let geo_distance_up_time_cn = geo_distance > 500 ? '外勤打卡':'上班时间';
+                            let geo_distance_down_time_cn = geo_distance > 500 ? '外勤打卡':'下班时间';
+                            $('.up_time_cn').html(geo_distance_up_time_cn);
+                            $('.down_time_cn').html(geo_distance_down_time_cn);
+                            if(geo_distance > 500){
+                                $('.onclock').css({
+                                    background:'#FFA52F',
+                                    boxShadow:'0 0 0.5rem 0 rgb(255, 165, 47)'
+                                });
+                            }
+
+                            $('.position_card').html(json.address + geo_distance_cn)
                             $('#position_to_work').attr('position',json.address)
                             $('#position_out_work').attr('position',json.address)
-                            $('#update_card').attr('position',json.address)
-                            $('#remark_address').html(json.address)
+                            $('#update_card').attr('position',json.address + geo_distance_cn)
+                            $('#remark_address').html(json.address + geo_distance_cn)
                             $('#update_card').addClass('work')
                             $('#position_to_work').addClass('work')
                             $('#position_to_work').addClass('work')
@@ -252,7 +269,7 @@
         var morning_time = '{:time()}';
         var play_card_time = '{:date("H:i:s",time())}';
 //        console.log(morning_remarks);
-        if (morning_time>workTime){
+        if (morning_time>workTime || geo_distance > 500){
 //            var is_morning_status = 2;
             $('.box').show();
             $('.remark').show();
@@ -270,7 +287,10 @@
                     'time_day':time_day,
                     'morning_time':play_card_time,
                     'is_morning_status':2,
-                    'morning_remarks':morning_remarks
+                    'morning_remarks':morning_remarks,
+                    'geo_distance':geo_distance,
+                    'geo_lat':geo_lat,
+                    'geo_lng':geo_lng
                 };
                 $('.remark').hide();
                 $('.box').hide();
@@ -292,7 +312,10 @@
                 'position':position,
                 'time_day':time_day,
                 'morning_time':play_card_time,
-                'is_morning_status':1
+                'is_morning_status':1,
+                'geo_distance':geo_distance,
+                'geo_lat':geo_lat,
+                'geo_lng':geo_lng
             };
             $.post("{:url('index/attendance/punchClock')}",$data,function (res) {
                 if (res){
@@ -324,7 +347,7 @@
         var play_card_time = '{:date("H:i:s",time())}';
 
 //        console.log(morning_remarks);
-        if (morning_time<workTime){
+        if (morning_time<workTime || geo_distance > 500){
 //            alert(position);
 //            var is_morning_status = 2;
             $('.remark').show();
@@ -344,7 +367,10 @@
                     'time_day':time_day,
                     'afternoon_time':play_card_time,
                     'is_afternoon_status':2,
-                    'afternoon_remarks':afternoon_remarks
+                    'afternoon_remarks':afternoon_remarks,
+                    'geo_distance':geo_distance,
+                    'geo_lat':geo_lat,
+                    'geo_lng':geo_lng
                 };
                 $('.remark').hide();
                 $('.box').hide();
@@ -366,7 +392,10 @@
                 'position':position,
                 'time_day':time_day,
                 'afternoon_time':play_card_time,
-                'is_afternoon_status':1
+                'is_afternoon_status':1,
+                'geo_distance':geo_distance,
+                'geo_lat':geo_lat,
+                'geo_lng':geo_lng
             };
             $.post("{:url('index/attendance/goClock')}",$data,function (res) {
                 if (res){
