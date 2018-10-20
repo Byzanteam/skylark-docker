@@ -159,7 +159,7 @@
 <!--定位-->
 <script type="text/javascript">
     var geo_distance,geo_lat,geo_lng,geo_coder;
-    var MainGeo = new qq.maps.LatLng(30.541780,104.040480);
+    var MainGeo = new qq.maps.LatLng('{$CENTER_LAT}','{$CENTER_LNG}');
     let max_distance = parseInt('{$MAX_DISTANCE}') 500;
     wx.config({
 //        debug:true,
@@ -195,7 +195,7 @@
                         var latitudeNew = json.latitudeNew;
                         var longitudeNew = json.longitudeNew;
                         if (json.status==0){
-                            let geo_distance_cn = geo_distance > 500 ? '(外勤)':'';
+                            let geo_distance_cn = geo_distance > max_distance ? '(外勤)':'';
                             let geo_distance_up_time_cn = geo_distance > max_distance ? '外勤打卡':'上班时间';
                             let geo_distance_down_time_cn = geo_distance > max_distance ? '外勤打卡':'下班时间';
                             $('.up_time_cn').html(geo_distance_up_time_cn);

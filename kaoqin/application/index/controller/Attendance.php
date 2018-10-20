@@ -44,6 +44,8 @@ class Attendance extends Controller
                 $res1['u_id'] = $res1['id'];
                 $this->assign('res',$res1);
                 $this->assign('MAX_DISTANCE',getenv('MAX_DISTANCE'));
+                $this->assign('CENTER_LAT',getenv('CENTER_LAT'));
+                $this->assign('CENTER_LNG',getenv('CENTER_LNG'));
                 $this->assign('miscellaneous',$miscellaneous);
                 $this->assign('signPackage',$signPackage);
                 return $this->fetch('index');
@@ -70,7 +72,7 @@ class Attendance extends Controller
 
         $geo_distance = request()->post('geo_distance');
         $data['distance_number_morning'] = intval($geo_distance);
-        $data['is_beyond_morning'] = $geo_distance > 500 ? 1 : 0;
+        $data['is_beyond_morning'] = $geo_distance > getenv('MAX_DISTANCE') ? 1 : 0;
         $data['geo_lat_morning'] = request()->post('geo_lat');
         $data['geo_lng_morning'] = request()->post('geo_lng');
 
@@ -133,7 +135,7 @@ class Attendance extends Controller
 
         $geo_distance = request()->post('geo_distance');
         $data['distance_number_afternoon'] = intval($geo_distance);
-        $data['is_beyond_afternoon'] = $geo_distance > 500 ? 1 : 0;
+        $data['is_beyond_afternoon'] = $geo_distance > getenv('MAX_DISTANCE') ? 1 : 0;
         $data['geo_lat_afternoon'] = request()->post('geo_lat');
         $data['geo_lng_afternoon'] = request()->post('geo_lng');
 
