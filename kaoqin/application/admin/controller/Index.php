@@ -429,6 +429,33 @@ class Index extends Controller {
                     ->paginate($page_number);
             }
 
+        }elseif ($is_status==3){
+            if($time ==date('Y-m-d',time())&&date('H:i:s',time())<=$miscellaneous['out_work']){
+                $results = Db::table('attendance')
+                    ->alias('a')
+                    ->where('a.time_day','like','%'.$time.'%')
+                    ->where('time_day','>=',$start_time)
+                    ->where('time_day','<=',$end_time)
+                    ->where(function ($query){
+                        $query->where('a.is_beyond_morning|a.is_beyond_afternoon','eq',1);
+                    })
+                    ->join('users u','a.user_id = u.id')
+                    ->where('u.name','like','%'.$user_name.'%')
+                    ->paginate($page_number);
+            }else{
+                $results = Db::table('attendance')
+                    ->alias('a')
+                    ->where('a.time_day','like','%'.$time.'%')
+                    ->where('time_day','>=',$start_time)
+                    ->where('time_day','<=',$end_time)
+                    ->where(function ($query){
+                        $query->where('a.is_beyond_morning|a.is_beyond_afternoon','eq',1);
+                    })
+                    ->join('users u','a.user_id = u.id')
+                    ->where('u.name','like','%'.$user_name.'%')
+                    ->paginate($page_number);
+            }
+
         }
 //        $results = Db::table('attendance')->alias('a')->where('a.time_day','like','%'.$time.'%')->where('time_day','>=',$start_time)->where('time_day','<=',$end_time)->where($where)->join('users u','a.user_id = u.id')->where('u.name','like','%'.$user_name.'%')->paginate($page_number);
 //        var_dump($results);
@@ -436,6 +463,8 @@ class Index extends Controller {
 //            var_dump($miscellaneous);exit;
 
         foreach ($results as $key=>$result){
+            $result['morning_time'] .=  $result['is_beyond_morning'] == 1 ? '(外勤)':'';
+            $result['afternoon_time'] .=  $result['is_beyond_afternoon'] == 1 ? '(外勤)':'';
             if (date('H:i:s',time())<=$miscellaneous['to_work']&&empty($result['to_work'])&&$result['time_day']==date('Y-m-d',time())){
                 $result['is_morning_status']=1;
             }elseif (date('H:i:s',time())<=$miscellaneous['out_work']&&empty($result['out_work'])&&$result['time_day']==date('Y-m-d',time())){
@@ -520,6 +549,10 @@ class Index extends Controller {
         foreach ($res as $r){
             $r['is_morning_status'] = $r['is_morning_status']==1?'正常':($r['is_morning_status']==2?'异常':'未打卡');
             $r['is_afternoon_status'] = $r['is_afternoon_status']==1?'正常':($r['is_afternoon_status']==2?'异常':'未打卡');
+            $is_beyond_morning = $r['is_beyond_morning'] == 1 ? '(外勤)' : '';
+            $r['morning_time'] = $r['afternoon_address'] . $is_beyond_morning;
+            $is_beyond_afternoon = $r['is_beyond_afternoon'] == 1 ? '(外勤)' : '';
+            $r['afternoon_time'] = $r['afternoon_address'] . $is_beyond_afternoon;
             $results []= $r;
         }
         $table = ['用户名', '考勤时间', '上班时间','上班打卡地点' ,'上班打卡状态','下班时间', '下班打卡地点','下班打卡状态'];
