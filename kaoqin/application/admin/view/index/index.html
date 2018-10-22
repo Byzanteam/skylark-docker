@@ -50,6 +50,7 @@
                     <span class="statusselect selectstyle1" att="all">全部</span>
                     <span class="statusselect" att="normal">正常</span>
                     <span class="statusselect" att="abnormal">异常</span>
+                    <span class="statusselect" att="beyond">外勤</span>
                 </div>
             </div>
             <div class="select_one" style="position: relative;">
@@ -235,6 +236,9 @@
         }
         if(status =='abnormal'){
             var is_status =2;
+        }
+        if(status =='beyond'){
+            var is_status =3;
         }
         var star_time = $('#search_start_time').val('')
         var end_time = $('#search_end_time').val('');
