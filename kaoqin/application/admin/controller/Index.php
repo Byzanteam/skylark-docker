@@ -549,13 +549,13 @@ class Index extends Controller {
         foreach ($res as $r){
             $r['is_morning_status'] = $r['is_morning_status']==1?'正常':($r['is_morning_status']==2?'异常':'未打卡');
             $r['is_afternoon_status'] = $r['is_afternoon_status']==1?'正常':($r['is_afternoon_status']==2?'异常':'未打卡');
-            $is_beyond_morning = $r['is_beyond_morning'] == 1 ? '(外勤)' : '';
-            $r['morning_time'] = $r['afternoon_address'] . $is_beyond_morning;
-            $is_beyond_afternoon = $r['is_beyond_afternoon'] == 1 ? '(外勤)' : '';
-            $r['afternoon_time'] = $r['afternoon_address'] . $is_beyond_afternoon;
+            $r['morning_status'] = $r['is_beyond_morning'] == 1 ? '外勤' : '正常';
+            $r['afternoon_status'] = $r['is_beyond_afternoon'] == 1 ? '外勤' : '正常';
+			$r['distance_number_morning'] = $r['distance_number_morning'].'米';
+			$r['distance_number_afternoon'] = $r['distance_number_afternoon'].'米';
             $results []= $r;
         }
-        $table = ['用户名', '考勤时间', '上班时间','上班打卡地点' ,'上班打卡状态','下班时间', '下班打卡地点','下班打卡状态'];
+        $table = ['用户名', '考勤时间', '上班时间','上班打卡地点' ,'上班打卡状态','下班时间', '下班打卡地点','下班打卡状态','上班打卡类型','下班打卡类型','上班打卡距离学校地址','下班打卡距离学校地址'];
         if (!empty($time)){
             $tableName = '老师打卡情况表'.$time;
         }else{
