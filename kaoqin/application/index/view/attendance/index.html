@@ -55,7 +55,7 @@
             <!--未打卡-->
             <div style="{:empty($res['morning_time'])&&time()>strtotime('12:00:00')?'display:none':''}">
                 <div style="{:isset($res['morning_time'])&&!empty($res['morning_time'])?'display:none':''}">
-                    <div position="" id="position_to_work" class="onclock {:time()>strtotime($miscellaneous['to_work'])?'yellow':''}">
+                    <div position="" id="position_to_work" class="onclock {:time()>strtotime($miscellaneous['to_work'])?'yellow':''} work">
                         <div>
                             <div class="up_time_cn">上班时间</div>
                             <div class="nowtime">08:46:31</div>
