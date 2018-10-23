@@ -36,6 +36,9 @@ class Attendance extends Controller
         }
         if ($res) {
             $this->assign('res',$res);
+			$this->assign('MAX_DISTANCE',getenv('KQ_MAX_DISTANCE'));
+            $this->assign('CENTER_LAT',getenv('KQ_CENTER_LAT'));
+            $this->assign('CENTER_LNG',getenv('KQ_CENTER_LNG'));
             $this->assign('miscellaneous',$miscellaneous);
             $this->assign('signPackage',$signPackage);
             return $this->fetch('index');
