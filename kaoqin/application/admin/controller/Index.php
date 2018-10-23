@@ -544,7 +544,7 @@ class Index extends Controller {
             $where['a.is_morning_status']=2;
 
         }
-        $res =Db::table('attendance')->alias('a')->where('a.time_day','like','%'.$time.'%')->where('time_day','>',$start_time)->where('time_day','<=',$end_time)->where($where)->join('users u','a.user_id = u.id')->where('u.name','like','%'.$user_name.'%')->field('name,time_day,morning_time,morning_address,is_morning_status,afternoon_time,afternoon_address,is_afternoon_status,is_beyond_morning,is_beyond_afternoon')->select();
+        $res =Db::table('attendance')->alias('a')->where('a.time_day','like','%'.$time.'%')->where('time_day','>',$start_time)->where('time_day','<=',$end_time)->where($where)->join('users u','a.user_id = u.id')->where('u.name','like','%'.$user_name.'%')->field('name,time_day,morning_time,morning_address,is_morning_status,afternoon_time,afternoon_address,is_afternoon_status,is_beyond_morning,is_beyond_afternoon','distance_number_morning','distance_number_afternoon')->select();
         $results= [];
         foreach ($res as $r){
             $r['is_morning_status'] = $r['is_morning_status']==1?'正常':($r['is_morning_status']==2?'异常':'未打卡');
