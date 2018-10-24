@@ -1,1 +1,1 @@
-UPDATE attendance SET is_morning_statu = 1 WHERE is_morning_status = 2 and time_day = '2018-10-24' and morning_time > '08:30:00'
+UPDATE attendance SET is_morning_status = 1 WHERE is_morning_status = 2 and time_day = '2018-10-24' and morning_time > '08:30:00'
