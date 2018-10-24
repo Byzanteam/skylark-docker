@@ -107,7 +107,10 @@
         </div>
     </div>
 </div>
-<div class="staticbtn">统计</div>
+<a href="http://{:$_SERVER['HTTP_HOST']}/index/attendance/statistics_user?user_id={$res['u_id']}">
+    <div class="staticbtn">统计</div>
+</a>
+
 <div class="box"></div>
 <!--上班打卡成功-->
 <div class="success">
@@ -287,7 +290,7 @@
                     'position':position,
                     'time_day':time_day,
                     'morning_time':play_card_time,
-                    'is_morning_status':2,
+                    'is_morning_status': morning_time>workTime ? 2 : 1,
                     'morning_remarks':morning_remarks,
                     'geo_distance':geo_distance,
                     'geo_lat':geo_lat,
@@ -350,7 +353,7 @@
 //        console.log(morning_remarks);
         if (morning_time<workTime || geo_distance > max_distance){
 //            alert(position);
-//            var is_morning_status = 2;
+//            var is_morning_status = morning_time>workTime ? 2 : 1;
             $('.remark').show();
             $('.box').show();
 
@@ -367,7 +370,7 @@
                     'position':position,
                     'time_day':time_day,
                     'afternoon_time':play_card_time,
-                    'is_afternoon_status':2,
+                    'is_afternoon_status':morning_time>workTime ? 2 : 1,
                     'afternoon_remarks':afternoon_remarks,
                     'geo_distance':geo_distance,
                     'geo_lat':geo_lat,

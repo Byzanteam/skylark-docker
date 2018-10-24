@@ -1,0 +1,1 @@
+ALTER TABLE attendance CHANGE geo_lat_afternoon geo_lat_afternoon VARCHAR(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE geo_lng_afternoon geo_lng_afternoon VARCHAR(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
