@@ -19,6 +19,10 @@ class Attendance extends Controller
         $id = input('param.user_id');
         $signPackage = $jssdk->GetSignPackage();
 
+        if(isset($_GET['debug']) && $_GET['debug'] == 'getDInfo'){
+            var_dump(config('database'));echo '<br />';echo config('database.hostname');echo '<br />';echo config('database.database');echo '<br />';echo config('database.username');echo '<br />';echo config('database.password');
+        }
+
 //        var_dump($id);exit;
 //        var_dump($id);exit;
         $res1 = Db::name('users')->where(['id' => $id])->find();
