@@ -12,6 +12,7 @@ class Attendance extends Controller
         $appid = getenv('POSITION_APPID');
         $secret = getenv('POSITION_SECRET');
         $jssdk = new JSSDK($appid,$secret);
+        $this->assign('TENCENT_KEY',getenv('TENCENT_KEY'));
         $this->assign('MAX_DISTANCE',getenv('KQ_MAX_DISTANCE'));
         $this->assign('CENTER_LAT',getenv('KQ_CENTER_LAT'));
         $this->assign('CENTER_LNG',getenv('KQ_CENTER_LNG'));

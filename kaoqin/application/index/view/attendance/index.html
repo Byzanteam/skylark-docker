@@ -61,7 +61,7 @@
                             <div class="nowtime">08:46:31</div>
                         </div>
                     </div>
-                    <div class="position"><img src="/static/images/position.png"><span class="position_card">定位中...</span></div>
+                    <div class="position"><img src="/static/images/position.png"><span class="position_card" onclick="getLocation()">定位中...</span></div>
                 </div>
                 <!--已打卡-->
                 <div class="hasclock" style="{:isset($res['morning_time'])&&!empty($res['morning_time'])?'':'display:none'}">
@@ -92,7 +92,7 @@
                         </div>
                         <!--<img src="/static/images/loading.png" class="rotate">-->
                     </div>
-                    <div class="position"><img src="/static/images/position.png"><span class="position_card">定位中...</span></div>
+                    <div class="position"><img src="/static/images/position.png"><span class="position_card" onclick="getLocation()">定位中...</span></div>
                 </div>
                 <!--已打卡-->
                 <div class="hasclock" style="{:isset($res['afternoon_time'])&&!empty($res['afternoon_time'])?'':'display:none'}">
@@ -164,6 +164,7 @@
     var geo_distance,geo_lat,geo_lng,geo_coder;
     var MainGeo = new qq.maps.LatLng('{$CENTER_LAT}','{$CENTER_LNG}');
     let max_distance = parseInt('{$MAX_DISTANCE}');
+    let TENCENT_KEY = '{$TENCENT_KEY}';
     wx.config({
 //        debug:true,
         appId: "{$signPackage.appId}",
@@ -182,59 +183,62 @@
     });
 
     //通过ready接口处理成功验证，加载直接调用的程序放在ready中，这里目前为空
-    wx.ready(function () {
-        wx.getLocation({
-            success: function (res) {
-                var latitude = geo_lat = res.latitude; //纬度
-                var longitude = geo_lng = res.longitude; //经度
-                geo_coder = new qq.maps.LatLng(geo_lat,geo_lng);
-                geo_distance = qq.maps.geometry.spherical.computeDistanceBetween(MainGeo, geo_coder);
-                $.ajax({
-                    url: "{:url('index/index/tencent')}",
-                    type: "POST",
-                    data: JSON.stringify(res),
-                    dataType: "json",
-                    success: function(json){
-                        var latitudeNew = json.latitudeNew;
-                        var longitudeNew = json.longitudeNew;
-                        if (json.status==0){
-                            let geo_distance_cn = geo_distance > max_distance ? '(外勤)':'';
-                            let geo_distance_up_time_cn = geo_distance > max_distance ? '外勤打卡':'上班时间';
-                            let geo_distance_down_time_cn = geo_distance > max_distance ? '外勤打卡':'下班时间';
-                            $('.up_time_cn').html(geo_distance_up_time_cn);
-                            $('.down_time_cn').html(geo_distance_down_time_cn);
-                            if(geo_distance > max_distance){
-                                $('.onclock').css({
-                                    background:'#FFA52F',
-                                    boxShadow:'0 0 0.5rem 0 rgb(255, 165, 47)'
-                                });
+    function getLocation(){
+        wx.ready(function () {
+            wx.getLocation({
+                success: function (res) {
+                    var latitude = geo_lat = res.latitude; //纬度
+                    var longitude = geo_lng = res.longitude; //经度
+                    geo_coder = new qq.maps.LatLng(geo_lat,geo_lng);
+                    geo_distance = qq.maps.geometry.spherical.computeDistanceBetween(MainGeo, geo_coder);
+                    $.ajax({
+                        url: "https://apis.map.qq.com/ws/geocoder/v1/?location="+latitude+","+longitude+"&key="+TENCENT_KEY,
+                        type: "get",
+                        dataType: "json",
+                        success: function(ret){
+                            if (ret.status==0){
+                                var address = ret.result.formatted_addresses.recommend;
+                                let geo_distance_cn = geo_distance > max_distance ? '(外勤)':'';
+                                let geo_distance_up_time_cn = geo_distance > max_distance ? '外勤打卡':'上班时间';
+                                let geo_distance_down_time_cn = geo_distance > max_distance ? '外勤打卡':'下班时间';
+                                $('.up_time_cn').html(geo_distance_up_time_cn);
+                                $('.down_time_cn').html(geo_distance_down_time_cn);
+                                if(geo_distance > max_distance){
+                                    $('.onclock').css({
+                                        background:'#FFA52F',
+                                        boxShadow:'0 0 0.5rem 0 rgb(255, 165, 47)'
+                                    });
+                                }
+
+                                $('.position_card').html(address + geo_distance_cn)
+                                $('#position_to_work').attr('position',address)
+                                $('#position_out_work').attr('position',address)
+                                $('#update_card').attr('position',address + geo_distance_cn)
+                                $('#remark_address').html(address + geo_distance_cn)
+                                $('#update_card').addClass('work')
+                                $('#position_to_work').addClass('work')
+                                $('#position_to_work').addClass('work')
+                                $('#position_out_work').addClass('go_work')
+                            }else{
+                                alert("微信定位失败！");
                             }
-
-                            $('.position_card').html(json.address + geo_distance_cn)
-                            $('#position_to_work').attr('position',json.address)
-                            $('#position_out_work').attr('position',json.address)
-                            $('#update_card').attr('position',json.address + geo_distance_cn)
-                            $('#remark_address').html(json.address + geo_distance_cn)
-                            $('#update_card').addClass('work')
-                            $('#position_to_work').addClass('work')
-                            $('#position_to_work').addClass('work')
-                            $('#position_out_work').addClass('go_work')
+                        },
+                        error: function(){
+                            alert("微信定位失败！");
                         }
-                    },
-                    error: function(){
-                        alert("有错误！");
-                    }
-                });//end ajax
-            },
-            cancel: function (res) {
-                alert('用户拒绝授权获取地理位置');
-            },
-            fail: function (res) {
-//                alert(JSON.stringify(res));
-            }
-        });//end wx.getLocation
-
-    });
+                    });
+                },
+                cancel: function (res) {
+                    alert('用户拒绝授权获取地理位置');
+                },
+                fail: function (res) {
+                    alert("微信定位失败！");
+    //                alert(JSON.stringify(res));
+                }
+            });//end wx.getLocation
+        });
+    }
+    getLocation();
 </script>
 
 <script>
