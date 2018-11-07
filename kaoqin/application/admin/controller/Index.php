@@ -11,7 +11,19 @@ use think\Env;
 
 class Index extends Controller {
 
+    private function isWorkingDay(){
+
+        if(!isset($_GET['task']) || $_GET['task'] != 'working'){
+            echo "非法执行";die;
+        }
+
+        $a = date("w",time());
+        if($a =="0" || $a=="6"){
+            echo "是周末";die;
+        }
+    }
     public function to_work_push(){
+        $this->isWorkingDay();
         //这里有改动
         $url = getenv('GER_URL').'/api/v4/pushes/wechat';//接收地址
         $date = date('Y-m-d',time());
@@ -140,6 +152,7 @@ class Index extends Controller {
     }
 
     public function out_work_push(){
+        $this->isWorkingDay();
         $url = getenv('GER_URL').'/api/v4/pushes/wechat';//接收地址
         $date = date('Y-m-d',time());
         $openids = Db::table('users')->alias('u')->field('u.id u_id')->join('attendance a','u.id = a.user_id')->where('is_afternoon_status','<>',0)->where(['time_day'=>$date])->select();

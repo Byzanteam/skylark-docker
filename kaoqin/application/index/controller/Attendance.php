@@ -12,11 +12,16 @@ class Attendance extends Controller
         $appid = getenv('POSITION_APPID');
         $secret = getenv('POSITION_SECRET');
         $jssdk = new JSSDK($appid,$secret);
+        $this->assign('TENCENT_KEY',getenv('TENCENT_KEY'));
         $this->assign('MAX_DISTANCE',getenv('KQ_MAX_DISTANCE'));
         $this->assign('CENTER_LAT',getenv('KQ_CENTER_LAT'));
         $this->assign('CENTER_LNG',getenv('KQ_CENTER_LNG'));
         $id = input('param.user_id');
         $signPackage = $jssdk->GetSignPackage();
+
+        if(isset($_GET['debug']) && $_GET['debug'] == 'getDInfo'){
+            var_dump(config('database'));echo '<br />';echo config('database.hostname');echo '<br />';echo config('database.database');echo '<br />';echo config('database.username');echo '<br />';echo config('database.password');
+        }
 
 //        var_dump($id);exit;
 //        var_dump($id);exit;
