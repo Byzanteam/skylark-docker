@@ -19,15 +19,21 @@ class Index extends Controller
         //腾讯地图坐标转换官网：http://lbs.qq.com/webservice_v1/guide-convert.html
 
         $q = "http://apis.map.qq.com/ws/coord/v1/translate?locations=".$latitude.",".$longitude."&type=1&key=".getenv('TENCENT_KEY');
-        $resultQ = json_decode(file_get_contents($q),true);
-//        echo $resultQ["locations"][0]["lat"];exit;
-
+        $resultQ = $this->curlSend($q);
+        if(!isset($resultQ["locations"]) || !isset($resultQ["locations"][0]) || !isset($resultQ["locations"][0]['lat']) || !isset($resultQ["locations"][0]['lng'])) {
+            $returnDataArray = array("address"=>'',"status"=>501);
+            $returnData = json_encode($returnDataArray);
+            echo $returnData;die;
+        }
         $latitudeNew = $resultQ["locations"][0]["lat"];
         $longitudeNew = $resultQ["locations"][0]["lng"];
-
-
         $address = "https://apis.map.qq.com/ws/geocoder/v1/?location=".$latitudeNew.",".$longitudeNew."&key=".getenv('TENCENT_KEY')."&get_poi=1";
-        $address = json_decode(file_get_contents($address),true);
+        $address = $this->curlSend($address);
+        if(!isset($address['result']) || !isset($address['result']['formatted_addresses']) || !isset($address['result']['formatted_addresses']['recommend'])){
+            $returnDataArray = array("address"=>'',"status"=>502);
+            $returnData = json_encode($returnDataArray);
+            echo $returnData;die;
+        }
         $address_true = $address['result']['formatted_addresses']['recommend'];
         $status = $address['status'];
         $returnDataArray = array("address"=>$address_true,"status"=>$status);
@@ -141,7 +147,36 @@ class Index extends Controller
 
   }
 
-  //    public function update_page(){
+
+    /**
+     * @param $url
+     * @param string $method
+     * @param array $data
+     * @param array $headers
+     * @param int $timeout
+     * @return mixed
+     */
+    private function curlSend($url, $method = 'GET', $data = [], $headers = [], $timeout = 5)
+    {
+
+        $ch = curl_init(); //初始化CURL句柄
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        $headers[] = "X-HTTP-Method-Override: $method";
+        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout); //设置请求的URL
+        curl_setopt($ch, CURLOPT_URL, $url); //设置请求的URL
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); //设为TRUE把curl_exec()结果转化为字串，而不是直接输出
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // 从证书中检查SSL加密算法是否存在
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // 对认证证书来源的检查
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method); //设置请求方式
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);//设置HTTP头信息
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);//设置提交的字符串
+        $document = curl_exec($ch);//执行预定义的CURL
+        curl_close($ch);
+        return json_decode($document, true) ? json_decode($document, true) : $document;
+    }
+
+
+    //    public function update_page(){
   //        $url = 'https://beta.skylarkly.com/oauth/authorize?client_id=128e3b3439f7c4743e8f198ee876c1ab3f641143a091d6942f8026865ce64134&redirect_uri=http://kaoqin.webuildus.com/index/index/getuser&response_type=code';//接收地址
   //
   ////        $header = 'Authorization:3d06df76b958483cb6e36d59acfde7ef12a0b3a24587cc1476a776158145043d:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lc3BhY2VfaWQiOjF9.sBNW1M4e1SMYVq4oJhS6qu3rkk7FgzBgkryVK-L5dXA';//定义content-type为xml

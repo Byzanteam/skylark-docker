@@ -9,3 +9,7 @@ images/production/skylark*
 app.local.env
 
 .env
+
+.idea
+
+kaoqin/application/database.php

@@ -555,19 +555,26 @@ class Index extends Controller {
             $where['a.is_afternoon_status']=1;
         }elseif ($is_status==2){
             $where['a.is_morning_status']=2;
-
+            $where['a.is_afternoon_status']=2;
+        }elseif ($is_status==3){
+            $where['a.is_beyond_morning']=1;
+            $where['a.is_beyond_afternoon']=1;
         }
         $res =Db::table('attendance')->alias('a')->where('a.time_day','like','%'.$time.'%')->where('time_day','>',$start_time)->where('time_day','<=',$end_time)->where($where)->join('users u','a.user_id = u.id')->where('u.name','like','%'.$user_name.'%')->field('name,time_day,morning_time,morning_address,is_morning_status,afternoon_time,afternoon_address,is_afternoon_status,is_beyond_morning,is_beyond_afternoon,distance_number_morning,distance_number_afternoon')->select();
+
         $results= [];
         foreach ($res as $r){
             $r['is_morning_status'] = $r['is_morning_status']==1?'正常':($r['is_morning_status']==2?'异常':'未打卡');
             $r['is_afternoon_status'] = $r['is_afternoon_status']==1?'正常':($r['is_afternoon_status']==2?'异常':'未打卡');
-            $r['morning_status'] = $r['is_beyond_morning'] == 1 ? '外勤' : '正常';
-            $r['afternoon_status'] = $r['is_beyond_afternoon'] == 1 ? '外勤' : '正常';
-			$r['distance_number_morning'] = $r['distance_number_morning'].'米';
-			$r['distance_number_afternoon'] = $r['distance_number_afternoon'].'米';
+            $r['is_beyond_morning'] = $r['is_beyond_morning'] == 1 ? '外勤' : '正常';
+            $r['is_beyond_afternoon'] = $r['is_beyond_afternoon'] == 1 ? '外勤' : '正常';
+			$r['distance_number_morning_cn'] = $r['distance_number_morning'].'米';
+			$r['distance_number_afternoon_cn'] = $r['distance_number_afternoon'].'米';
+			unset($r['distance_number_morning']);
+			unset($r['distance_number_afternoon']);
             $results []= $r;
         }
+
         $table = ['用户名', '考勤时间', '上班时间','上班打卡地点' ,'上班打卡状态','下班时间', '下班打卡地点','下班打卡状态','上班打卡类型','下班打卡类型','上班打卡距离学校地址','下班打卡距离学校地址'];
         if (!empty($time)){
             $tableName = '老师打卡情况表'.$time;
