@@ -188,6 +188,7 @@
         wx.ready(function () {
             wx.getLocation({
                 success: function (res) {
+                    console.log(res);
                     var latitude = geo_lat = res.latitude; //纬度
                     var longitude = geo_lng = res.longitude; //经度
                     geo_coder = new qq.maps.LatLng(geo_lat,geo_lng);
@@ -227,20 +228,31 @@
                                 $('#update_too_card').addClass('go_work');
                                 $('#update_too_card').attr('position',json.address);
                             }else{
-                                alert('定位失败，正在重试...');
-                                getLocation();
+                                var r = confirm('定位失败，是否重试');
+                                if (r == true){
+                                    getLocation();
+                                }
                             }
                         },
                         error: function(){
-                            alert("获取位置失败！");
+                            var r = confirm("获取位置失败！");
+                            if (r == true){
+                                getLocation();
+                            }
                         }
                     });//end ajax
                 },
                 cancel: function (res) {
-                    alert('用户拒绝授权获取地理位置');
+                    var r = confirm('用户拒绝授权获取地理位置');
+                    if (r == true){
+                        getLocation();
+                    }
                 },
                 fail: function (res) {
-                    alert("微信定位失败！");
+                    var r = confirm("微信定位失败！");
+                    if (r == true){
+                        getLocation();
+                    }
                 }
             });//end wx.getLocation
         });
@@ -364,9 +376,13 @@
 
     });
 
+    function unixtime(){
+        return Math.round(new Date().getTime()/1000);
+    }
+
     function out_work_send($data,type) {
         var work_late,url,work_too_time,successBtn,play_card_time;
-        if(type == 2){
+        if(type == 1){
             url = "{:url('index/attendance/punchClock')}?debug";
             work_late = $('.go_work_late');
             work_too_time = $('.up_too_time');
@@ -383,12 +399,13 @@
             if (res){
                 work_too_time.html(play_card_time);
                 work_late.css('display',  parseInt($data.is_afternoon_status) == 2 ? 'inline-block' : 'none');
-                $('.offsuccess').show();
+                successBtn.show();
                 $('.box').show();
-                successBtn.on('click','.IKnowBtn',function () {
+                $( ".IKnowBtn" ).click(function() {
                     successBtn.hide();
                     $('.box').hide();
-                })
+                    window.location.reload();
+                });
             }
         })
     }
