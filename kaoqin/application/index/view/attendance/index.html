@@ -67,7 +67,7 @@
                 <div class="hasclock" style="{:isset($res['morning_time'])&&!empty($res['morning_time'])?'':'display:none'}">
                     <div>打卡时间：<span class="up_too_time">{:isset($res['morning_time'])?$res['morning_time']:''}</span><span class="late go_work_late" style="{:isset($res['is_morning_status'])&&($res['is_morning_status']==2)?'':'display:none'}" >迟到</span></div>
                     <div class="position hasposition"><img src="/static/images/hasposition.png">{:empty($res['morning_address'])?:$res['morning_address']}</div>
-                    <div class="updateclock" position="" id="update_card" style="{:date('H',time())>=9?'display:none':''}">更新打卡</div>
+                    <div class="updateclock" position="" id="update_card" style="{:isset($res['morning_time'])&&!empty($res['morning_time'])?'':'display:none'}">更新打卡</div>
                 </div>
             </div>
 
@@ -300,7 +300,7 @@
             'position':position,
             'time_day':time_day,
             'morning_time':play_card_time,
-            'is_morning_status': morning_time>workTime ? 1 : 2,
+            'is_morning_status': morning_time<=workTime ? 1 : 2,
             'morning_remarks':'',
             'geo_distance':geo_distance,
             'geo_lat':geo_lat,
