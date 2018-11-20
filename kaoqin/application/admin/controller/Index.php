@@ -366,7 +366,7 @@ class Index extends Controller {
         $user_name = request()->get('user_name');
         $start_time = request()->get('start_time');
         $end_time = request()->get('end_time');
-        $page_number = request()->get('page_number')??20;
+        $page_number = request()->get('page_number') > 0 ? request()->get('page_number') : 20;
         $no_card = request()->get('no_card');
         if (empty($start_time)){
             $start_time=0;
@@ -478,11 +478,19 @@ class Index extends Controller {
         foreach ($results as $key=>$result){
             $result['morning_time'] .=  $result['is_beyond_morning'] == 1 ? '(外勤)':'';
             $result['afternoon_time'] .=  $result['is_beyond_afternoon'] == 1 ? '(外勤)':'';
-            if (date('H:i:s',time())<=$miscellaneous['to_work']&&empty($result['to_work'])&&$result['time_day']==date('Y-m-d',time())){
+
+            $is_afternoon_status = $result['is_afternoon_status'];
+            $is_morning_status = $result['is_morning_status'];
+
+            $result['morning_time'] .=  $is_morning_status == 2 ? '(迟到)': '';
+            $result['afternoon_time'] .=  $is_afternoon_status == 2 ? '(早退)':'';
+            /*if (date('H:i:s',time())<=$miscellaneous['to_work']&&empty($result['to_work'])&&$result['time_day']==date('Y-m-d',time())){
                 $result['is_morning_status']=1;
-            }elseif (date('H:i:s',time())<=$miscellaneous['out_work']&&empty($result['out_work'])&&$result['time_day']==date('Y-m-d',time())){
-                $result['is_afternoon_status']=1;
             }
+
+            if (date('H:i:s',time())<=$miscellaneous['out_work']&&empty($result['out_work'])&&$result['time_day']==date('Y-m-d',time())){
+                $result['is_afternoon_status']=1;
+            }*/
             $results[$key] = $result;
         }
         return $results;

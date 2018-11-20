@@ -162,7 +162,7 @@
 <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&libraries=geometry"></script>
 <!--定位-->
 <script type="text/javascript">
-    var geo_distance,geo_lat,geo_lng,geo_coder,out_work_address,to_work_address;
+    var geo_distance,geo_lat,geo_lng,geo_coder,out_work_address,to_work_address,unixtime;
     var MainGeo = new qq.maps.LatLng('{$CENTER_LAT}','{$CENTER_LNG}');
     let max_distance = parseInt('{$MAX_DISTANCE}');
     let TENCENT_KEY = '{$TENCENT_KEY}';
@@ -264,15 +264,16 @@
 //    window.onload  = function () {
 //        getUserPositionInfo()
 //    }
-    $('.staticbtn').click(function () {
-        window.location.href="http://{:$_SERVER['HTTP_HOST']}/index/attendance/statistics_user?user_id={$res['u_id']}";
-    });
+//     $('.staticbtn').click(function () {
+//         window.location.href="http://{:$_SERVER['HTTP_HOST']}/index/attendance/statistics_user?user_id={$res['u_id']}";
+//     });
     gettime();
     function gettime() {
         var date=new Date();
         var year=date.getFullYear();
         var month=(date.getMonth()+1)<10?'0'+(date.getMonth()+1):(date.getMonth()+1);
         var day=date.getDate()<10?'0'+date.getDate():date.getDate();
+        unixtime = Math.round(new Date().getTime()/1000);
         $('.todaydate').html(year+'-'+month+'-'+day);
         h = (date.getHours() <10 ? '0'+date.getHours() : date.getHours()) + ':';
         m = (date.getMinutes() <10 ? '0'+date.getMinutes() : date.getMinutes()) + ':';
