@@ -61,13 +61,13 @@
                             <div class="nowtime">08:46:31</div>
                         </div>
                     </div>
-                    <div class="position"><img src="/static/images/position.png"><span class="position_card" onclick="getLocation()">定位中...</span></div>
+                    <div class="position"><img src="/static/images/position.png"><span class="position_card" onclick="$(this).html('定位中...');getLocation()">定位中...</span></div>
                 </div>
                 <!--已打卡-->
                 <div class="hasclock" style="{:isset($res['morning_time'])&&!empty($res['morning_time'])?'':'display:none'}">
-                    <div>打卡时间：{:isset($res['morning_time'])?$res['morning_time']:''}<span class="late" style="{:isset($res['is_morning_status'])&&($res['is_morning_status']==2)?'':'display:none'}" >迟到</span></div>
+                    <div>打卡时间：<span class="up_too_time">{:isset($res['morning_time'])?$res['morning_time']:''}</span><span class="late go_work_late" style="{:isset($res['is_morning_status'])&&($res['is_morning_status']==2)?'':'display:none'}" >迟到</span></div>
                     <div class="position hasposition"><img src="/static/images/hasposition.png">{:empty($res['morning_address'])?:$res['morning_address']}</div>
-                    <div class="updateclock" position="" id="update_card" style="{:date('H',time())>=9?'display:none':''}">更新打卡</div>
+                    <div class="updateclock" position="" id="update_card" style="{:isset($res['morning_time'])&&!empty($res['morning_time'])?'':'display:none'}">更新打卡</div>
                 </div>
             </div>
 
@@ -92,13 +92,14 @@
                         </div>
                         <!--<img src="/static/images/loading.png" class="rotate">-->
                     </div>
-                    <div class="position"><img src="/static/images/position.png"><span class="position_card" onclick="getLocation()">定位中...</span></div>
+                    <div class="position"><img src="/static/images/position.png"><span class="position_card" onclick="$(this).html('定位中...');getLocation()">定位中...</span></div>
                 </div>
                 <!--已打卡-->
                 <div class="hasclock" style="{:isset($res['afternoon_time'])&&!empty($res['afternoon_time'])?'':'display:none'}">
-                    <div>打卡时间：{:isset($res['afternoon_time'])?$res['afternoon_time']:''}<span class="late" style="{:isset($res['is_afternoon_status'])&&($res['is_afternoon_status']==2)?'':'display:none'}">早退</span></div>
+                    <div>打卡时间：<span class="too_time">{:isset($res['afternoon_time'])?$res['afternoon_time']:''}</span><span class="late out_work_late" style="{:isset($res['is_afternoon_status'])&&($res['is_afternoon_status']==2)?'':'display:none'}">早退</span></div>
                     <div class="position hasposition" style="text-align: left"><img src="/static/images/hasposition.png">{:empty($res['afternoon_address'])?'':$res['afternoon_address']}</div>
                     <!--<div class="updateclock">更新打卡</div>-->
+                    <div class="updateclock" position="" id="update_too_card" style="{:isset($res['afternoon_time'])&&!empty($res['afternoon_time'])?'':'display:none'}">更新打卡</div>
                 </div>
                 <!--缺卡-->
                 <div class="lack" style="display: none">缺卡</div>
@@ -120,7 +121,7 @@
     </div>
     <div class="success_time">{:date('H:i:s',time())}</div>
     <div>一天的时间，从此刻开始</div>
-    <div class="failed_btn">我知道了</div>
+    <div class="failed_btn IKnowBtn">我知道了</div>
 </div>
 <!--打卡失败-->
 <div class="failed">
@@ -151,7 +152,7 @@
         <div>下班打卡成功</div>
     </div>
     <div>辛苦啦！回家好好休息吧</div>
-    <div class="offsuccess_btn">我知道了</div>
+    <div class="offsuccess_btn IKnowBtn">我知道了</div>
 </div>
 <!--<div id='container'></div>-->
 <!--<div id="tip"></div>-->
@@ -161,12 +162,12 @@
 <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&libraries=geometry"></script>
 <!--定位-->
 <script type="text/javascript">
-    var geo_distance,geo_lat,geo_lng,geo_coder;
+    var geo_distance,geo_lat,geo_lng,geo_coder,out_work_address,to_work_address,unixtime;
     var MainGeo = new qq.maps.LatLng('{$CENTER_LAT}','{$CENTER_LNG}');
     let max_distance = parseInt('{$MAX_DISTANCE}');
     let TENCENT_KEY = '{$TENCENT_KEY}';
     wx.config({
-//        debug:true,
+       // debug:true,
         appId: "{$signPackage.appId}",
         timestamp: '{$signPackage.timestamp}',
         nonceStr: '{$signPackage.nonceStr}',
@@ -187,20 +188,25 @@
         wx.ready(function () {
             wx.getLocation({
                 success: function (res) {
+                    console.log(res);
                     var latitude = geo_lat = res.latitude; //纬度
                     var longitude = geo_lng = res.longitude; //经度
                     geo_coder = new qq.maps.LatLng(geo_lat,geo_lng);
                     geo_distance = qq.maps.geometry.spherical.computeDistanceBetween(MainGeo, geo_coder);
                     $.ajax({
-                        url: "https://apis.map.qq.com/ws/geocoder/v1/?location="+latitude+","+longitude+"&key="+TENCENT_KEY,
-                        type: "get",
+                        url: "{:url('index/index/tencent')}?debug",
+                        type: "POST",
+                        data: JSON.stringify(res),
                         dataType: "json",
-                        success: function(ret){
-                            if (ret.status==0){
-                                var address = ret.result.formatted_addresses.recommend;
+                        success: function(json){
+                            var latitudeNew = json.latitudeNew;
+                            var longitudeNew = json.longitudeNew;
+                            if (json.status==0){
                                 let geo_distance_cn = geo_distance > max_distance ? '(外勤)':'';
                                 let geo_distance_up_time_cn = geo_distance > max_distance ? '外勤打卡':'上班时间';
                                 let geo_distance_down_time_cn = geo_distance > max_distance ? '外勤打卡':'下班时间';
+                                to_work_address = json.address + geo_distance_cn;
+                                out_work_address = json.address + geo_distance_cn;
                                 $('.up_time_cn').html(geo_distance_up_time_cn);
                                 $('.down_time_cn').html(geo_distance_down_time_cn);
                                 if(geo_distance > max_distance){
@@ -210,30 +216,43 @@
                                     });
                                 }
 
-                                $('.position_card').html(address + geo_distance_cn)
-                                $('#position_to_work').attr('position',address)
-                                $('#position_out_work').attr('position',address)
-                                $('#update_card').attr('position',address + geo_distance_cn)
-                                $('#remark_address').html(address + geo_distance_cn)
-                                $('#update_card').addClass('work')
-                                $('#position_to_work').addClass('work')
-                                $('#position_to_work').addClass('work')
-                                $('#position_out_work').addClass('go_work')
+                                $('.position_card').html(json.address + geo_distance_cn);
+                                $('#position_to_work').attr('position',json.address);
+                                $('#position_out_work').attr('position',json.address);
+                                $('#update_card').attr('position',json.address + geo_distance_cn);
+                                $('#remark_address').html(json.address + geo_distance_cn);
+                                $('#update_card').addClass('work');
+                                $('#position_to_work').addClass('work');
+                                $('#position_to_work').addClass('work');
+                                $('#position_out_work').addClass('go_work');
+                                $('#update_too_card').addClass('go_work');
+                                $('#update_too_card').attr('position',json.address);
                             }else{
-                                alert("微信定位失败！");
+                                var r = confirm('定位失败，是否重试');
+                                if (r == true){
+                                    getLocation();
+                                }
                             }
                         },
                         error: function(){
-                            alert("微信定位失败！");
+                            var r = confirm("获取位置失败！");
+                            if (r == true){
+                                getLocation();
+                            }
                         }
-                    });
+                    });//end ajax
                 },
                 cancel: function (res) {
-                    alert('用户拒绝授权获取地理位置');
+                    var r = confirm('用户拒绝授权获取地理位置');
+                    if (r == true){
+                        getLocation();
+                    }
                 },
                 fail: function (res) {
-                    alert("微信定位失败！");
-    //                alert(JSON.stringify(res));
+                    var r = confirm("微信定位失败！");
+                    if (r == true){
+                        getLocation();
+                    }
                 }
             });//end wx.getLocation
         });
@@ -245,15 +264,16 @@
 //    window.onload  = function () {
 //        getUserPositionInfo()
 //    }
-    $('.staticbtn').click(function () {
-        window.location.href="http://{:$_SERVER['HTTP_HOST']}/index/attendance/statistics_user?user_id={$res['u_id']}";
-    });
+//     $('.staticbtn').click(function () {
+//         window.location.href="http://{:$_SERVER['HTTP_HOST']}/index/attendance/statistics_user?user_id={$res['u_id']}";
+//     });
     gettime();
     function gettime() {
         var date=new Date();
         var year=date.getFullYear();
         var month=(date.getMonth()+1)<10?'0'+(date.getMonth()+1):(date.getMonth()+1);
         var day=date.getDate()<10?'0'+date.getDate():date.getDate();
+        unixtime = Math.round(new Date().getTime()/1000);
         $('.todaydate').html(year+'-'+month+'-'+day);
         h = (date.getHours() <10 ? '0'+date.getHours() : date.getHours()) + ':';
         m = (date.getMinutes() <10 ? '0'+date.getMinutes() : date.getMinutes()) + ':';
@@ -264,7 +284,6 @@
 
     //上班打卡
     $('.onduty').on('click','.work',function () {
-
         var date=new Date();
         var year=date.getFullYear();
         var month=(date.getMonth()+1)<10?'0'+(date.getMonth()+1):(date.getMonth()+1);
@@ -272,13 +291,24 @@
         var today = year+'/'+month+'/'+day;
         var workTime = (new Date(today+ " {$miscellaneous['to_work']}")).getTime()/1000;
         var user_id  = "{$res['u_id']}";
-        var position = $(this).attr('position');
+        var position = to_work_address;
         var time_day = '{:date("Y-m-d",time())}';
         var morning_time = '{:time()}';
         var play_card_time = '{:date("H:i:s",time())}';
-//        console.log(morning_remarks);
+
+        $data = {
+            'user_id':user_id,
+            'position':position,
+            'time_day':time_day,
+            'morning_time':play_card_time,
+            'is_morning_status': morning_time<=workTime ? 1 : 2,
+            'morning_remarks':'',
+            'geo_distance':geo_distance,
+            'geo_lat':geo_lat,
+            'geo_lng':geo_lng
+        };
+
         if (morning_time>workTime || geo_distance > max_distance){
-//            var is_morning_status = 2;
             $('.box').show();
             $('.remark').show();
             $('.remark').on('click','#no_code',function () {
@@ -288,60 +318,19 @@
 
             $('.remark').on('click','#yes_code',function () {
                 var morning_remarks = $('#remark').val();
-                console.log(morning_remarks);
-                $data = {
-                    'user_id':user_id,
-                    'position':position,
-                    'time_day':time_day,
-                    'morning_time':play_card_time,
-                    'is_morning_status': morning_time>workTime ? 2 : 1,
-                    'morning_remarks':morning_remarks,
-                    'geo_distance':geo_distance,
-                    'geo_lat':geo_lat,
-                    'geo_lng':geo_lng
-                };
+                $data.morning_remarks = morning_remarks;
                 $('.remark').hide();
                 $('.box').hide();
-                $.post("{:url('index/attendance/punchClock')}",$data,function (res) {
-                    if (res){
-                        $('.success').show();
-                        $('.box').show();
-                        $('.success').on('click','.failed_btn',function () {
-                            window.location.href="http://{:$_SERVER['HTTP_HOST']}/index/attendance/index?user_id={$res['u_id']}";
-                        })
-                    }
-
-
-                })
+                out_work_send($data,1);
             })
         }else {
-            $data = {
-                'user_id':user_id,
-                'position':position,
-                'time_day':time_day,
-                'morning_time':play_card_time,
-                'is_morning_status':1,
-                'geo_distance':geo_distance,
-                'geo_lat':geo_lat,
-                'geo_lng':geo_lng
-            };
-            $.post("{:url('index/attendance/punchClock')}",$data,function (res) {
-                if (res){
-                    $('.success').show();
-                    $('.box').show();
-                    $('.success').on('click','.failed_btn',function () {
-                        window.location.href="http://{:$_SERVER['HTTP_HOST']}/index/attendance/index?user_id={$res['u_id']}";
-                    })
-                }
-
-            })
+            out_work_send($data,1);
         }
 
     });
 
     //下班打卡
     $('.offduty').on('click','.go_work',function () {
-//        alert(111);
         var date=new Date();
         var year=date.getFullYear();
         var month=(date.getMonth()+1)<10?'0'+(date.getMonth()+1):(date.getMonth()+1);
@@ -349,15 +338,24 @@
         var today = year+'/'+month+'/'+day;
         var workTime = (new Date(today+ " {$miscellaneous['out_work']}")).getTime()/1000;
         var user_id  = "{$res['u_id']}";
-        var position = $(this).attr('position');
+        var position = out_work_address;
         var time_day = '{:date("Y-m-d",time())}';
         var morning_time = '{:time()}';
         var play_card_time = '{:date("H:i:s",time())}';
 
-//        console.log(morning_remarks);
+        $data = {
+            'user_id':user_id,
+            'position':position,
+            'time_day':time_day,
+            'afternoon_time':play_card_time,
+            'is_afternoon_status':morning_time>workTime ? 1 : 2,
+            'afternoon_remarks':'',
+            'geo_distance':geo_distance,
+            'geo_lat':geo_lat,
+            'geo_lng':geo_lng
+        };
+
         if (morning_time<workTime || geo_distance > max_distance){
-//            alert(position);
-//            var is_morning_status = morning_time>workTime ? 2 : 1;
             $('.remark').show();
             $('.box').show();
 
@@ -368,56 +366,50 @@
 
             $('.remark').on('click','#yes_code',function () {
                 var afternoon_remarks = $('#remark').val();
-//                console.log(afternoon_remarks);
-                $data = {
-                    'user_id':user_id,
-                    'position':position,
-                    'time_day':time_day,
-                    'afternoon_time':play_card_time,
-                    'is_afternoon_status':morning_time>workTime ? 2 : 1,
-                    'afternoon_remarks':afternoon_remarks,
-                    'geo_distance':geo_distance,
-                    'geo_lat':geo_lat,
-                    'geo_lng':geo_lng
-                };
+                $data.afternoon_remarks = afternoon_remarks;
                 $('.remark').hide();
                 $('.box').hide();
-                $.post("{:url('index/attendance/goClock')}",$data,function (res) {
-                    if (res){
-                        $('.offsuccess').show();
-                        $('.box').show();
-                        $('.offsuccess').on('click','.offsuccess_btn',function () {
-                            window.location.href="http://{:$_SERVER['HTTP_HOST']}/index/attendance/index?user_id={$res['u_id']}";
-                        })
-                    }
-
-
-                })
+                out_work_send($data,2)
             })
         }else {
-            $data = {
-                'user_id':user_id,
-                'position':position,
-                'time_day':time_day,
-                'afternoon_time':play_card_time,
-                'is_afternoon_status':1,
-                'geo_distance':geo_distance,
-                'geo_lat':geo_lat,
-                'geo_lng':geo_lng
-            };
-            $.post("{:url('index/attendance/goClock')}",$data,function (res) {
-                if (res){
-                    $('.offsuccess').show();
-                    $('.box').show();
-                    $('.offsuccess').on('click','.offsuccess_btn',function () {
-                        window.location.href="http://{:$_SERVER['HTTP_HOST']}/index/attendance/index?user_id={$res['u_id']}";
-                    })
-                }
-
-            })
+            out_work_send($data,2)
         }
 
     });
+
+    function unixtime(){
+        return Math.round(new Date().getTime()/1000);
+    }
+
+    function out_work_send($data,type) {
+        var work_late,url,work_too_time,successBtn,play_card_time;
+        if(type == 1){
+            url = "{:url('index/attendance/punchClock')}?debug";
+            work_late = $('.go_work_late');
+            work_too_time = $('.up_too_time');
+            successBtn = $('.success');
+            play_card_time = $data.morning_time;
+        }else if(type == 2){
+            url = "{:url('index/attendance/goClock')}";
+            work_late = $('.out_work_late');
+            work_too_time = $('.too_time');
+            successBtn = $('.offsuccess');
+            play_card_time = $data.afternoon_time;
+        }
+        $.post(url,$data,function (res) {
+            if (res){
+                work_too_time.html(play_card_time);
+                work_late.css('display',  parseInt($data.is_afternoon_status) == 2 ? 'inline-block' : 'none');
+                successBtn.show();
+                $('.box').show();
+                $( ".IKnowBtn" ).click(function() {
+                    successBtn.hide();
+                    $('.box').hide();
+                    window.location.reload();
+                });
+            }
+        })
+    }
 
 </script>
 </body>

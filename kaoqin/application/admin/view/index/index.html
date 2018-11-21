@@ -80,7 +80,7 @@
                         <td>状态</td>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="dataLists">
 
                     </tbody>
                 </table>
@@ -433,8 +433,9 @@
         ajaxListData(data)
     })
     function ajaxListData(data){
-        $.get("{:url('admin/index/search')}",data,function (res) {
+        $.get("/admin/index/search?round="+Math.random(),data,function (res) {
             var html ='',number = 0;
+            $('.dataLists').html('');
             if (data.page>1){
                 number = (data.page -1)*res.per_page;
             }
@@ -462,7 +463,7 @@
                     }
                 });
             }
-            $('tbody').html(html)
+            $('.dataLists').html(html)
         },'json')
     }
 

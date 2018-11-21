@@ -71,7 +71,8 @@ class Attendance extends Controller
         $data['morning_time'] = request()->post('morning_time');
         $data['morning_address'] = request()->post('position');
         $data['time_day'] = request()->post('time_day');
-        $data['is_morning_status'] = request()->post('is_morning_status');
+        $is_morning_status = request()->post('is_morning_status');
+        $data['is_morning_status'] = $is_morning_status > 0 ? $is_morning_status : 0;
         $data['morning_remarks'] = request()->post('morning_remarks');
 
 
@@ -84,7 +85,7 @@ class Attendance extends Controller
         $day = date('Y-m-d');
         $res = Db::table('attendance')->where(['user_id'=>$user_id,'time_day'=>$day])->find();
         if ($res){
-            $result = Db::table('attendance')->where(['user_id'=>$user_id,'time_day'=>$day])->update($data);
+            $result = Db::table('attendance')->where('id',$res['id'])->update($data);
             if ($result){
                 return json_encode(
                     [
