@@ -12,5 +12,6 @@ docker run -d \
   -e "LOGROTATE_LOGFILE=/old_logs/logrotatecron.log" \
   -e "LOGROTATE_STATUSFILE=/old_logs/logrotate.status" \
   -e "TZ=Asia/Shanghai" \
+  -e "LOGROTATE_DATEFORMAT=-%Y%m%d" \
   --restart on-failure:1 \
   blacklabelops/logrotate

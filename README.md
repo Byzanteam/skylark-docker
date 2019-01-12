@@ -1,33 +1,30 @@
 # Skylark Docker
-Docker deployment of [Skylark](https://skylarkly.com).
+Docker deployment of [Skylark](https://github.com/GreenNerd/skylark).
 
-# Installation
+## Installation
+  - git
+  - [docker](https://docs.docker.com/install)
+  - [docker-compose](https://docs.docker.com/compose/install)
 
-## Install Docker / Git
-Get in China https://get.daocloud.io/ .
-```bash
-wget -qO- https://get.docker.com/ | sh
-```
-This command installs the latest versions of Docker and Git on your server. Alternately, you can manually [install Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and the [Docker package for your OS](https://docs.docker.com/installation/).
+## 设置 Docker
 
-Change docker mirror to docker-cn, add the below json into `/etc/docker/daemon.json`, and run `sudo service docker restart` to restart docker.
+#### 1、Change docker mirror
+add the below json into `/etc/docker/daemon.json`, and run `sudo service docker restart` to restart docker.
 ```json
-{
-  "registry-mirrors": ["https://registry.docker-cn.com"]
-}
+  {
+    "registry-mirrors": ["https://registry.docker-cn.com"]
+  }
 ```
 
-## Install Docker Compose
-```bash
-curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
-```
+#### 2、自启动
+[文档](https://docs.docker.com/install/linux/linux-postinstall/#configure-docker-to-start-on-boot)
+`sudo systemctl enable docker`
 
-Alternately, download manually at https://github.com/docker/compose/releases.
 
-## Install Skylark
+## Start Deploying
 
-Create a /var/skylark folder, clone the Official Skylark Docker Image into it:
+#### 1、Clone repo
+Create a `/var/skylark` folder, clone the Official Skylark Docker Image into it:
 
 ```bash
 mkdir /var/skylark
@@ -35,23 +32,27 @@ git clone https://github.com/GreenNerd/skylark-docker.git /var/skylark
 cd /var/skylark
 ```
 
-Build it manually
+#### 2、Configuration
+- `touch app.local.env`
+- 根据`app.default.env`，在`app.local.env`文件里配置相关的设置
+- 在`.env`文件里设置部署版本号，例：`SLP_VERSION=2.10.4-76802f2`
+
+#### 3、Login aliyun docker repo
 ```bash
-cd /var/skylark/images/base && ./build
-cd /var/skylark/images/production && ./build
+./scripts/login
 ```
 
-Run!
+#### 4、Initialization
+`./scripts/install`，it will create db & precompile assets...
 
-```bash
-cd /var/skylark
-docker-compose up -d
-```
 
-Before run you might run below:
-```bash
-cd /var/skylark
-./script/install # First install, precompile assets
-./script/start # Run server
-./script/update # Update container
-```
+#### 5、Start server
+`./scripts/start`
+
+#### 6、创建一个`Namespace`
+- `docker-compose exec app bundle exec rails console`，进入Rails console
+- `Namespace.create name: '空间名字'`
+
+
+#### 7、Logrotate
+`./scripts/logrotate`，日志切割，旧日志存放在`./old_log`，可以把`old_log`软连接到另一个磁盘

@@ -14,8 +14,66 @@ cd ..
 ./prepare/run
 ./build
 
-ssh -p 12346 root@47.98.158.107 -tt -- "\
-cd /var/skylark;\
-echo 'SLP_VERSION=$VERSION' > .env;\
-./scripts/update
-"
+skipped_servers=()
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+  -e)
+    skipped_servers+=("$2")
+    shift # past argument
+    shift # past value
+    ;;
+  *)
+    shift
+    ;;
+esac
+done
+
+deploy(){
+  echo "Deploy Server: $1"
+
+  port="22"
+  case $1 in
+    production)
+      port="12346"
+      server="root@47.98.158.107"
+      ;;
+    bigdatacd)
+      server="root@oa.bigdatacd.com"
+      ;;
+    fszx)
+      port="2222"
+      server="root@fszx.alone.bigdatacd.com"
+      ;;
+  esac
+
+  ssh -p $port $server -tt -- "\
+  cd /var/skylark;\
+  echo 'SLP_VERSION=$VERSION' > .env;\
+  ./scripts/update
+  "
+}
+
+export -f deploy
+
+# all_servers=(production bigdatacd fszx)
+all_servers=(production fszx)
+deployed_servers=()
+
+for i in "${all_servers[@]}"
+do
+  if [[ " ${skipped_servers[@]} " =~ " ${i} " ]]; then
+    echo "Skip server: ${i}"
+  else
+    deployed_servers+=("${i}")
+  fi
+done
+
+# join array
+servers_str=$(printf " %s" "${deployed_servers[@]}")
+servers_str=${servers_str:1}
+
+# https://www.gnu.org/software/parallel
+parallel deploy ::: $servers_str

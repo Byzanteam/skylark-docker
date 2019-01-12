@@ -2,8 +2,8 @@
 set -e
 
 cd ./images/production/skylark
-git fetch origin tcyx-fork
-git checkout origin/tcyx-fork
+git fetch origin bigdatacd_fork
+git checkout origin/bigdatacd_fork
 
 head_sha=$(git rev-parse --short HEAD)
 version=$(cat VERSION)
@@ -14,7 +14,7 @@ cd ..
 ./prepare/run
 ./build
 
-ssh skylark@110.185.102.13 -p 22 -o ProxyCommand='ssh -p 22 rails@beta.skylarkly.com -W %h:%p' -tt -- "\
+ssh root@oa.bigdatacd.com -tt -- "\
 cd /var/skylark;\
 echo 'SLP_VERSION=$VERSION' > .env;\
 ./scripts/update
