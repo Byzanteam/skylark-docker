@@ -55,7 +55,7 @@ RUN echo 'gem: --no-document' >> /usr/local/etc/gemrc && \
 
 RUN ruby -r rbconfig -e "puts RbConfig::CONFIG['LIBS']"
 
-RUN gem install bundler && gem cleanup
+RUN gem install bundler -v '1.17.3' && gem cleanup
 
 
 # clean up for docker squash
