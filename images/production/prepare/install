@@ -5,11 +5,6 @@ cd /var/www/skylark
 
 gem install bundler -v '1.17.3'
 
-# shadowsocks代理
-# https://stackoverflow.com/questions/31324981/how-to-access-host-port-from-docker-container
-# export http_proxy=http://docker.for.mac.localhost:1087;export https_proxy=http://docker.for.mac.localhost:1087;
-bundle config --local mirror.https://rubygems.org https://gems.ruby-china.com
-
 bundle install --deployment --without test development -j4 && \
   find /var/www/skylark/vendor/bundle -name tmp -type d -exec rm -rf {} +
 
