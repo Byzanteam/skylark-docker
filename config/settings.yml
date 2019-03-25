@@ -56,7 +56,7 @@ defaults: &defaults
     sentry_dsn: <%= ENV['SETTING_APP_SENTRY_DSN'] %>
     sentry_ruby_dsn: <%= ENV['SETTING_APP_SENTRY_RUBY_DSN'] %>
     sms_privoder: <%= ENV['SETTING_APP_SMS_PRIVODER'] %>
-    welcome_page: <%= ENV['SETTING_WELCOME_PAGE'] %>
+    welcome_page: <%= ENV['SETTING_APP_WELCOME_PAGE'] %>
     beian_code: <%= ENV['SETTING_APP_BEIAN_CODE'] %>
 
   exportable_file:
