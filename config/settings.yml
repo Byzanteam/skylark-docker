@@ -107,6 +107,7 @@ defaults: &defaults
           response_updated: <%= ENV['SETTING_ALIYUN_SMS_TEMPLATE_CODE_SUBSCRIPTION_RESPONSE_UPDATED'] %>
           organization_application: <%= ENV['SETTING_ALIYUN_SMS_TEMPLATE_CODE_SUBSCRIPTION_ORGANIZATION_APPLICATION'] %>
           bunch: <%= ENV['SETTING_ALIYUN_SMS_TEMPLATE_CODE_SUBSCRIPTION_BUNCH'] %>
+      ip_limit_per_day: <%= ENV['SETTING_ALIYUN_IP_LIMIT_PER_DAY'] %>
 
   jwt:
     las_vegas: <%= ENV['SETTING_JWT_LAS_VEGAS'] %>
