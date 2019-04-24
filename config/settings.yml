@@ -116,6 +116,11 @@ defaults: &defaults
     api_base: <%= ENV['SETTING_JUHE_API_BASE'] %>
     key: <%= ENV['SETTING_JUHE_KEY'] %>
 
+  dataos:
+    enable: <%= ENV['SETTING_DATAOS_ENABLE'] %>
+    namespace_id: <%= ENV['SETTING_DATAOS_NAMESPACE_ID'] %>
+    domain: <%= ENV['SETTING_DATAOS_DOMAIN'] %>
+
 development:
   <<: *defaults
 
