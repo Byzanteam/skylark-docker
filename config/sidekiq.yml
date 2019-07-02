@@ -5,6 +5,7 @@ production:
 :queues:
   - [push, 4]
   - [high, 3]
+  - [middle, 2]
   - [default, 2]
   - [cache, 1]
   - [chewy, 1]
