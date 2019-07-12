@@ -11,10 +11,7 @@ services:
       - ./etc/postgresql/postgresql.conf:/etc/postgresql/postgresql.conf
     expose:
       - '5432'
-    restart: on-failure:1
-    deploy:
-      restart_policy:
-        condition: on-failure
+    restart: always
 
   redis:
     container_name: 'slp_redis'
@@ -23,20 +20,14 @@ services:
       - ./data/redis:/data
     expose:
       - '6379'
-    restart: on-failure:1
-    deploy:
-      restart_policy:
-        condition: on-failure
+    restart: always
 
   memcached:
     container_name: 'slp_memcached'
     image: memcached:1.5.1-alpine
     expose:
       - '11211'
-    restart: on-failure:1
-    deploy:
-      restart_policy:
-        condition: on-failure
+    restart: always
 
   elasticsearch:
     container_name: 'slp_elasticsearch'
@@ -49,10 +40,7 @@ services:
     expose:
       - '9200'
       - '9300'
-    restart: on-failure:1
-    deploy:
-      restart_policy:
-        condition: on-failure
+    restart: always
 
   web:
     container_name: 'slp_web'
@@ -80,10 +68,7 @@ services:
     ports:
       - '80:80'
       - '443:443'
-    restart: on-failure:1
-    deploy:
-      restart_policy:
-        condition: on-failure
+    restart: always
 
   app: &app_base
     image: registry.cn-hangzhou.aliyuncs.com/skylark/production:$SLP_VERSION
@@ -115,10 +100,7 @@ services:
     command: bundle exec puma -C config/puma.rb
     expose:
       - '3000'
-    restart: on-failure:1
-    deploy:
-      restart_policy:
-        condition: on-failure
+    restart: always
 
   sidekiq:
     <<: *app_base
