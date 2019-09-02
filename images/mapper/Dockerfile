@@ -1,5 +1,4 @@
-FROM registry.cn-hangzhou.aliyuncs.com/skylark/base:2.5.0-jemalloc-ubuntu
-MAINTAINER Phil Chen '06fahchen@gmail.com'
+FROM ruby:2.5-alpine
 
 RUN useradd skylark -s /bin/bash -m -U && mkdir -p /var/www/slp_table_mapper
 RUN chown -R skylark:skylark /var/www/slp_table_mapper
