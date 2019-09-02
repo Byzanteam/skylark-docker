@@ -51,6 +51,8 @@ services:
     depends_on:
       - app
       - sidekiq
+      - mapper_app
+      - mapper_sidekiq
     command: /bin/bash /etc/nginx/start
     volumes:
       - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf
