@@ -1,0 +1,2 @@
+table_mapper:
+  perfix: <%= ENV['SETTING_TABLE_MAPPER_PERFIX'] %>
