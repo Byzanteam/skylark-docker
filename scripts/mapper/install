@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -eux
+
+docker-compose build
+docker-compose run mapper_app bundle exec rails db:create
+docker-compose run mapper_app bundle exec rails db:schema:load
+docker-compose run mapper_app bundle exec rails assets:precompile
