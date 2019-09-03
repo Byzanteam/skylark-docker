@@ -125,6 +125,7 @@ services:
       - ./config/mapper/redis.yml:/var/www/slp_table_mapper/config/redis.yml
       - ./config/mapper/settings.yml:/var/www/slp_table_mapper/config/settings.yml
       - ./tmp/pids:/var/www/pids
+      - ./log/mapper:/var/www/slp_table_mapper/log
     command: bundle exec puma -C config/puma.rb
     expose:
       - '5000'
