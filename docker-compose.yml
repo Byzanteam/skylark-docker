@@ -124,6 +124,7 @@ services:
       - ./config/mapper/puma.rb:/var/www/slp_table_mapper/config/puma.rb
       - ./config/mapper/redis.yml:/var/www/slp_table_mapper/config/redis.yml
       - ./config/mapper/settings.yml:/var/www/slp_table_mapper/config/settings.yml
+      - ./tmp/pids:/var/www/pids
     command: bundle exec puma -C config/puma.rb
     expose:
       - '5000'
@@ -131,6 +132,5 @@ services:
 
   mapper_sidekiq:
     <<: *mapper_app_base
-    container_name: 'slp_table_mapper_sidekiq'
     command: bundle exec sidekiq
     expose: []
