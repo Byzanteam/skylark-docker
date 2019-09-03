@@ -111,7 +111,7 @@ services:
     expose: []
 
   mapper_app: &mapper_app_base
-    image:
+    image: registry.cn-hangzhou.aliyuncs.com/skylark/table_mapper:1.0.0
     env_file:
       - app.default.env
       - app.local.env
@@ -131,5 +131,5 @@ services:
   mapper_sidekiq:
     <<: *mapper_app_base
     container_name: 'slp_table_mapper_sidekiq'
-    command: bundle exec sidekiq -L /var/www/slp_table_mapper/log/sidekiq.log
+    command: bundle exec sidekiq
     expose: []
