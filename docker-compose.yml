@@ -119,6 +119,7 @@ services:
       - db
       - redis
     volumes:
+      - ./config/mapper/secrets.yml:/var/www/slp_table_mapper/config/secrets.yml
       - ./config/mapper/database.yml:/var/www/slp_table_mapper/config/database.yml
       - ./config/mapper/puma.rb:/var/www/slp_table_mapper/config/puma.rb
       - ./config/mapper/redis.yml:/var/www/slp_table_mapper/config/redis.yml
