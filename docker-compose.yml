@@ -113,8 +113,8 @@ services:
 #  mapper_app: &mapper_app_base
 #    image: registry.cn-hangzhou.aliyuncs.com/skylark/table_mapper:1.0.0
 #    env_file:
-#      - app.default.env
-#      - app.local.env
+#      - mapper.default.env
+#      - mapper.local.env
 #    depends_on:
 #      - mapper_db
 #      - mapper_redis
@@ -140,8 +140,8 @@ services:
 #    container_name: 'slp_postgresql'
 #    image: postgres:9.5-alpine
 #    env_file:
-#      - app.default.env
-#      - app.local.env
+#      - mapper.default.env
+#      - mapper.local.env
 #    volumes:
 #      - ./data/mapper/postgresql:/var/lib/postgresql/data
 #      - ./etc/mapper/postgresql/postgresql.conf:/etc/postgresql/postgresql.conf
