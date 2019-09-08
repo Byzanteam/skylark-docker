@@ -11,3 +11,4 @@ images/production/skylark*
 app.local.env
 
 .env
+.idea
