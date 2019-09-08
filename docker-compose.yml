@@ -116,8 +116,8 @@ services:
 #      - app.default.env
 #      - app.local.env
 #    depends_on:
-#      - db
-#      - redis
+#      - mapper_db
+#      - mapper_redis
 #    volumes:
 #      - ./config/mapper/secrets.yml:/var/www/slp_table_mapper/config/secrets.yml
 #      - ./config/mapper/database.yml:/var/www/slp_table_mapper/config/database.yml
@@ -135,3 +135,25 @@ services:
 #    <<: *mapper_app_base
 #    command: bundle exec sidekiq
 #    expose: []
+#
+#  mapper_db:
+#    container_name: 'slp_postgresql'
+#    image: postgres:9.5-alpine
+#    env_file:
+#      - app.default.env
+#      - app.local.env
+#    volumes:
+#      - ./data/mapper/postgresql:/var/lib/postgresql/data
+#      - ./etc/mapper/postgresql/postgresql.conf:/etc/postgresql/postgresql.conf
+#    expose:
+#      - '5433'
+#    restart: on-failure:1
+#
+#  mapper_redis:
+#    container_name: 'slp_redis'
+#    image: redis:3.2-alpine
+#    volumes:
+#      - ./data/mapper/redis:/data
+#    expose:
+#      - '6380'
+#    restart: on-failure:1
