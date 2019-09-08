@@ -1,6 +1,6 @@
 defaults: &defaults
-  host: <%= ENV['REDIS_HOST'] %>
-  port: <%= ENV['REDIS_PORT'] %>
+  host: <%= ENV['MAPPER_REDIS_HOST'] %>
+  port: <%= ENV['MAPPER_REDIS_PORT'] %>
 development:
   <<: *defaults
 test:
