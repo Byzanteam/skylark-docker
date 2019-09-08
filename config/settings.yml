@@ -121,6 +121,9 @@ defaults: &defaults
     namespace_id: <%= ENV['SETTING_DATAOS_NAMESPACE_ID'] %>
     domain: <%= ENV['SETTING_DATAOS_DOMAIN'] %>
 
+  table_mapper:
+    url: <%= ENV['SETTING_TABLE_MAPPER_URL'] %>
+
 development:
   <<: *defaults
 
