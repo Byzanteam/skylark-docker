@@ -157,3 +157,11 @@ services:
     expose:
       - '6380'
     restart: on-failure:1
+
+  point_db:
+    image: postgres:9.5-alpine
+    volumes:
+      - ./data/point_data/postgresql:/var/lib/postgresql/data
+      - ./etc/point_data/postgresql/postgresql.conf:/etc/postgresql/postgresql.conf
+    ports:
+      - '5434:5434'
