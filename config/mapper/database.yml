@@ -1,0 +1,19 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV['POSTGRES_POOL'] %>
+  username: <%= ENV['POSTGRES_USER'] %>
+  password: <%= ENV['POSTGRES_PASSWORD'] %>
+  host: <%= ENV['POSTGRES_HOST'] %>
+
+development:
+  <<: *default
+  database: slp_table_mapper_development
+
+test:
+  <<: *default
+  database: slp_table_mapper_test
+
+production:
+  <<: *default
+  database: slp_table_mapper_production
