@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -eux
+
+docker-compose exec db pg_dump -U $POSTGRES_USER -d skylark_production -f /var/lib/postgresql/data/$(date "+%Y%m%d")dump.sql
