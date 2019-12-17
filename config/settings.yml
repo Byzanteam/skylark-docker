@@ -118,11 +118,14 @@ defaults: &defaults
 
   dataos:
     enable: <%= ENV['SETTING_DATAOS_ENABLE'] %>
-    namespace_id: <%= ENV['SETTING_DATAOS_NAMESPACE_ID'] %>
     domain: <%= ENV['SETTING_DATAOS_DOMAIN'] %>
 
+  gxcloud:
+    enable: <%= ENV['SETTING_GXCLOUD_ENABLE'] %>
+
   table_mapper:
-    url: <%= ENV['SETTING_TABLE_MAPPER_URL'] %>
+    mapper_url: <%= ENV['SETTING_TABLE_MAPPER_MAPPER_URL'] %>
+    reset_url: <%= ENV['SETTING_TABLE_MAPPER_RESET_URL'] %>
 
 development:
   <<: *defaults
