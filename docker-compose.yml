@@ -2,13 +2,13 @@ version: '3'
 services:
   db:
     container_name: 'slp_postgresql'
-    image: postgres:9.5-alpine
+    image: postgres:10.6-alpine
     env_file:
       - app.default.env
       - app.local.env
     volumes:
       - ./data/postgresql:/var/lib/postgresql/data
-      - ./etc/postgresql/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./etc/postgresql/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
     expose:
       - '5432'
     restart: on-failure:1
