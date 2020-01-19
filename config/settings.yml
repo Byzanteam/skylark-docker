@@ -119,6 +119,7 @@ defaults: &defaults
   dataos:
     enable: <%= ENV['SETTING_DATAOS_ENABLE'] %>
     domain: <%= ENV['SETTING_DATAOS_DOMAIN'] %>
+    key: <%= ENV['SETTING_DATAOS_KEY'] %>
 
   gxcloud:
     enable: <%= ENV['SETTING_GXCLOUD_ENABLE'] %>
