@@ -8,7 +8,7 @@ services:
       - app.local.env
     volumes:
       - ./data/postgresql:/var/lib/postgresql/data
-      - ./etc/postgresql/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./etc/postgresql/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
     expose:
       - '5432'
     restart: on-failure:1
