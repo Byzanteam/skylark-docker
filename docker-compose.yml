@@ -15,7 +15,7 @@ services:
 
   redis:
     container_name: 'slp_redis'
-    image: redis:3.2-alpine
+    image: redis:5.0.7-alpine
     volumes:
       - ./data/redis:/data
     expose:
