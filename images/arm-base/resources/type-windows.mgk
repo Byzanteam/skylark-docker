@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<typemap>
+  <type
+    name="华文黑体"
+    fullname="华文黑体"
+    family="华文黑体"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="/usr/share/fonts/truetype/华文黑体.ttf"
+    />
+</typemap>

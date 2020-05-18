@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -e
+
+docker build -t registry.cn-hangzhou.aliyuncs.com/skylark/base:2.5.0-arm-ubuntu .
+#docker push registry.cn-hangzhou.aliyuncs.com/skylark/base:2.5.0-arm-ubuntu
