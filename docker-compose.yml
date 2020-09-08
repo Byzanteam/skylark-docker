@@ -8,7 +8,7 @@ services:
       - app.local.env
     volumes:
       - ./data/postgresql:/var/lib/postgresql/data
-      - ./etc/postgresql/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./etc/postgresql/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
     expose:
       - '5432'
     restart: on-failure:1
@@ -111,7 +111,7 @@ services:
     expose: []
 
   mapper_app: &mapper_app_base
-    image: registry.cn-hangzhou.aliyuncs.com/skylark/table_mapper:1.0.0
+    image: registry.cn-hangzhou.aliyuncs.com/skylark/table_mapper:2.0.0
     env_file:
       - mapper.default.env
       - mapper.local.env
@@ -124,6 +124,7 @@ services:
       - ./config/mapper/puma.rb:/var/www/slp_table_mapper/config/puma.rb
       - ./config/mapper/redis.yml:/var/www/slp_table_mapper/config/redis.yml
       - ./config/mapper/settings.yml:/var/www/slp_table_mapper/config/settings.yml
+      - ./config/mapper/sidekiq.yml:/var/www/slp_table_mapper/config/sidekiq.yml
       - ./tmp/pids:/var/www/pids
       - ./log/mapper:/var/www/slp_table_mapper/log
     command: bundle exec puma -C config/puma.rb
@@ -133,7 +134,7 @@ services:
 
   mapper_sidekiq:
     <<: *mapper_app_base
-    command: bundle exec sidekiq
+    command: bundle exec sidekiq -C config/sidekiq.yml -L /var/www/skylark/log/sidekiq.log
     expose: []
 
   mapper_db:
@@ -144,7 +145,7 @@ services:
       - mapper.local.env
     volumes:
       - ./data/mapper/postgresql:/var/lib/postgresql/data
-      - ./etc/mapper/postgresql/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./etc/mapper/postgresql/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
     expose:
       - '5433'
     restart: on-failure:1
