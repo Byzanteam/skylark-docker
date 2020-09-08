@@ -111,7 +111,7 @@ services:
     expose: []
 
   mapper_app: &mapper_app_base
-    image: registry.cn-hangzhou.aliyuncs.com/skylark/table_mapper:1.0.0
+    image: registry.cn-hangzhou.aliyuncs.com/skylark/table_mapper:2.0.0
     env_file:
       - mapper.default.env
       - mapper.local.env
