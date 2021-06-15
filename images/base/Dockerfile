@@ -17,7 +17,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y ca-certificates \
                                                       libssl-dev libreadline-dev zlib1g-dev \
                                                       graphicsmagick \
                                                       tzdata \
-                                                      libjemalloc-dev
+                                                      libjemalloc-dev \
+                                                      shared-mime-info
 
 RUN echo "Asia/Shanghai" > /etc/timezone && rm /etc/localtime
 RUN dpkg-reconfigure -f noninteractive tzdata
