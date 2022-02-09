@@ -12,6 +12,7 @@ defaults: &defaults
 
   qiniu:
     bucket: <%= ENV['SETTING_QINIU_BUCKET'] %>
+    upload_url: <%= ENV['SETTING_QINIU_UPLOAD_URL'] %>
     domain: <%= ENV['SETTING_QINIU_DOMAIN'] %>
     access_key: <%= ENV['SETTING_QINIU_ACCESS_KEY'] %>
     secret_key: <%= ENV['SETTING_QINIU_SECRET_KEY'] %>
