@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -e
+
+echo $PWD
+docker run \
+  -v $PWD/skylark:/var/www/skylark \
+  -v $PWD/prepare/install:/var/www/skylark/tmp/deploy_prepare \
+  registry.cn-hangzhou.aliyuncs.com/skylark/base-arm:2.5.0-jemalloc-ubuntu \
+  './var/www/skylark/tmp/deploy_prepare'

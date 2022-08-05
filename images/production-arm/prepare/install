@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -e
+
+git clone --recursive git://github.com/rubyjs/libv8.git
+cd /gn/libv8
+bundle install
+bundle exec rake compile; exit 0
+
+cd /var/www/skylark
+
+gem install bundler -v '1.17.3'
+
+bundle install --deployment --without test development -j4 && \
+  find /var/www/skylark/vendor/bundle -name tmp -type d -exec rm -rf {} +
+
+NODE_ENV=production yarn install
+
+bundle clean
