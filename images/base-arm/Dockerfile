@@ -1,0 +1,84 @@
+# NAME:    skylark/base
+# VERSION: release
+FROM --platform=arm64 ubuntu:18.04
+
+MAINTAINER Phil Chen '06fahchen@gmail.com'
+
+RUN echo 2.0.`date +%Y%m%d` > /VERSION
+
+ENV RUBY_VERSION=2.5.0
+
+RUN sed -i 's/archive.ubuntu.com/mirrors.163.com/g' /etc/apt/sources.list
+RUN apt-get update && apt-get install -y apt-utils
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y ca-certificates \
+                                                      curl \
+                                                      git-core \
+                                                      build-essential \
+                                                      libssl-dev libreadline-dev zlib1g-dev \
+                                                      graphicsmagick \
+                                                      tzdata \
+                                                      libjemalloc-dev \
+                                                      shared-mime-info
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python3
+
+RUN echo "Asia/Shanghai" > /etc/timezone && rm /etc/localtime
+RUN dpkg-reconfigure -f noninteractive tzdata
+
+# set locale
+RUN apt-get install -y locales && rm -rf /var/lib/apt/lists/* \
+        && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+ENV LANG en_US.utf8
+
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN apt-get update && apt-get -y install redis-tools \
+                                         libpq-dev \
+                                         yarn
+
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get install -y nodejs
+
+RUN yarn config set registry 'https://registry.npm.taobao.org'
+
+ADD install-nginx /tmp/install-nginx
+RUN chmod 744 /tmp/install-nginx
+RUN /tmp/install-nginx
+
+COPY resources/华文黑体.ttf /usr/share/fonts/truetype/
+COPY resources/type.mgk /tmp/
+COPY resources/type-windows.mgk /tmp/
+RUN find /usr/lib -name type-windows.mgk -type f -exec cp /tmp/type-windows.mgk {} +
+RUN find /usr/lib -name type.mgk -type f -exec cp /tmp/type.mgk {} +
+
+ENV RUBY_BUILD_MIRROR_URL=https://gems.ruby-china.com
+RUN echo 'gem: --no-document' >> /usr/local/etc/gemrc && \
+    mkdir /src && cd /src && \
+    git clone https://github.com/rbenv/ruby-build.git && \
+    cd /src/ruby-build && ./install.sh && \
+    cd / && rm -rf /src/ruby-build && \
+    RUBY_CONFIGURE_OPTS=--with-jemalloc ruby-build $RUBY_VERSION /usr/local/
+
+RUN ruby -r rbconfig -e "puts RbConfig::CONFIG['LIBS']"
+
+RUN gem install bundler -v '1.17.3' && gem cleanup
+
+RUN npm install node-sass -g
+
+# clean up for docker squash
+RUN   rm -fr /usr/share/man && \
+      rm -fr /usr/share/doc && \
+      rm -fr /usr/share/vim/vim74/tutor && \
+      rm -fr /usr/share/vim/vim74/doc && \
+      rm -fr /usr/share/vim/vim74/lang && \
+      rm -fr /usr/local/share/doc && \
+      rm -fr /usr/local/share/ruby-build && \
+      rm -fr /root/.gem && \
+      rm -fr /root/.npm && \
+      rm -fr /tmp/* && \
+      rm -fr /usr/share/vim/vim74/spell/en*
+
+# Clean apt-get
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/*

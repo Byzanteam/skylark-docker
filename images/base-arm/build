@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -e
+
+docker buildx build --platform linux/amd64 -t registry.cn-hangzhou.aliyuncs.com/skylark/base-arm:2.5.0-jemalloc-ubuntu .
+docker push registry.cn-hangzhou.aliyuncs.com/skylark/base-arm:2.5.0-jemalloc-ubuntu
