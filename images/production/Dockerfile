@@ -1,7 +1,7 @@
 # NAME:    skylark/base
 # VERSION: release
 
-FROM registry.cn-hangzhou.aliyuncs.com/skylark/base:2.5.0-jemalloc-ubuntu
+FROM registry.cn-hangzhou.aliyuncs.com/skylark/base-node16:2.5.0-jemalloc-ubuntu
 MAINTAINER Phil Chen '06fahchen@gmail.com'
 
 # Skylark specific bits

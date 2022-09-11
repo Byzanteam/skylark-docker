@@ -32,8 +32,11 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 RUN apt-get update && apt-get -y install redis-tools \
                                          libpq-dev \
-                                         nodejs \
                                          yarn
+
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get install -y nodejs
+
 RUN yarn config set registry 'https://registry.npm.taobao.org'
 
 ADD install-nginx /tmp/install-nginx
