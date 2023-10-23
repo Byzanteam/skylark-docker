@@ -1,3 +1,5 @@
+require 'puma/daemon'
+
 pidfile    '/var/www/pids/puma.pid'
 state_path '/var/www/pids/puma.state'
 daemonize  false
